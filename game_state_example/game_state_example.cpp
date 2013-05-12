@@ -5,7 +5,7 @@
 #include <future>
 
 
-int main()
+int main(int argc, char **argv)
 {
 	try {
 		pacman::game game(std::unique_ptr<pacman::game_state>(new sample_game_state));
