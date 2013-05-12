@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <stdexcept>
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <mathgl.h>

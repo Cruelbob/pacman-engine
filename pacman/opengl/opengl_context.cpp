@@ -1,6 +1,7 @@
 #include <opengl/opengl_context.hpp>
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include <mathgl/mathgl.h>
+#include <stdexcept>
 
 namespace pacman {
     opengl_context::opengl_context():

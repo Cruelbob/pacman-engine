@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <stdexcept>
 
 namespace pacman {
 opengl_image::opengl_image():

@@ -1,4 +1,5 @@
 #include <game_state.hpp>
+#include <stdexcept>
 
 namespace pacman {
 game_state::game_state() {
@@ -24,7 +25,7 @@ void game_state::set_graphics_contex(const std::shared_ptr<user_graphics_context
 }
 void game_state::set_next_state(std::unique_ptr<game_state>&& p_state) {
 	if(state_change_clbk) {
-		state_change_clbk(std::move(p_state));
+		state_change_clbk(p_state);
 	} else {
 		throw std::runtime_error("game_state::set_state_change_callback was not called");
 	}

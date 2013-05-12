@@ -3,7 +3,7 @@
 namespace pacman {
 game::game(std::unique_ptr<game_state>&& p_first_state):
   p_graphics_ctx(create_graphics_context()) {
-	set_next_state(std::move(p_first_state));
+	set_next_state(p_first_state);
 }
 game::~game() {
 }
