@@ -43,6 +43,10 @@ include_directories(pacman)
 include_directories(pacman/mathgl)
 include_directories(game_state_example)
 
+if (NOT DEFINED CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
+
 add_library(pacman_engine STATIC ${SOURCE_LIB})
 
 add_executable(example ${SOURCE_EXE})
