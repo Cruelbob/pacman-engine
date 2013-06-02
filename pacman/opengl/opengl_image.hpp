@@ -13,7 +13,7 @@ class opengl_image: public user_image {
 
     uint32_t get_texture_id();
 
-    void load_from_buffer(const std::vector<uint8_t>& buffer,image_format format,size_in_pixels_t size = size_in_pixels_t()) override;
+    void load_from_buffer(const std::vector<uint8_t>& buffer,image_buffer_format format,size_in_pixels_t size = size_in_pixels_t()) override;
     void change_coords(screen_point_t coords) override;
     screen_point_t get_coords() override;
     size_in_pixels_t get_size() override;

@@ -20,17 +20,17 @@ opengl_image::~opengl_image() {
     glDeleteTextures(1, &texture_id);
 }
 
-void opengl_image::load_from_buffer(const std::vector<uint8_t>& buffer,image_format format,size_in_pixels_t size) {
+void opengl_image::load_from_buffer(const std::vector<uint8_t>& buffer,image_buffer_format format,size_in_pixels_t size) {
     glBindTexture(GL_TEXTURE_2D,texture_id);
     GLenum gl_format;
     switch (format) {
-      case image_format::raw_rgb:
+      case image_buffer_format::raw_rgb:
         gl_format = GL_RGB;
         break;
-      case image_format::raw_rgba:
+      case image_buffer_format::raw_rgba:
         gl_format = GL_RGBA;
         break;
-      case image_format::raw_bgr:
+      case image_buffer_format::raw_bgr:
         gl_format = GL_BGR;
         break;
       default:

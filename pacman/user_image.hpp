@@ -24,7 +24,7 @@ class user_image {
     virtual float scale(float value) = 0;
     virtual size_in_pixels_t change_size(size_in_pixels_t size) = 0;
     */
-    virtual void load_from_buffer(const std::vector<uint8_t>& buffer,image_format format,size_in_pixels_t size = size_in_pixels_t()) = 0;
+    virtual void load_from_buffer(const std::vector<uint8_t>& buffer,image_buffer_format format,size_in_pixels_t size = size_in_pixels_t()) = 0;
     virtual void change_coords(screen_point_t coords) = 0;
     virtual screen_point_t get_coords() = 0;
     virtual size_in_pixels_t get_size() = 0;
