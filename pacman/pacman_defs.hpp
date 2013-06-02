@@ -19,9 +19,10 @@ struct size_in_pixels_t {
 					height;
 };
 
-typedef std::chrono::duration<float, std::ratio<1,1000>> time_type;
+typedef std::chrono::duration<float,std::milli> time_type;
 
 enum class image_format {
+    autoselect,
     raw_rgb,
     raw_rgba,
     raw_bgr,

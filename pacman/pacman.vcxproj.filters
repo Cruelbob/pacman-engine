@@ -33,9 +33,6 @@
     <ClCompile Include="game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game_state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="sdl\sdl_graphics_context.cpp">
       <Filter>Source Files\sdl</Filter>
     </ClCompile>
@@ -45,11 +42,11 @@
     <ClCompile Include="opengl\opengl_context.cpp">
       <Filter>Source Files\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="user_game_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game_state.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,6 +73,12 @@
     </ClInclude>
     <ClInclude Include="opengl\opengl_context.hpp">
       <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="user_game_state.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game_state.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -170,7 +170,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="game_state.cpp" />
+    <ClCompile Include="user_game_state.cpp" />
     <ClCompile Include="opengl\opengl_context.cpp" />
     <ClCompile Include="opengl\opengl_image.cpp" />
     <ClCompile Include="sdl\sdl_graphics_context.cpp" />
@@ -179,6 +179,7 @@
     <ClInclude Include="audio_context.hpp" />
     <ClInclude Include="game.hpp" />
     <ClInclude Include="game_state.hpp" />
+    <ClInclude Include="user_game_state.hpp" />
     <ClInclude Include="graphics_context.hpp" />
     <ClInclude Include="opengl\opengl_context.hpp" />
     <ClInclude Include="opengl\opengl_image.hpp" />

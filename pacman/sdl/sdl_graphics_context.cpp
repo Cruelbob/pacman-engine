@@ -25,15 +25,19 @@ void sdl_graphics_context::render() {
     opengl_ctx.render();
     SDL_GL_SwapBuffers();
     SDL_Event event;
-    SDL_PollEvent(&event);
-    switch( event.type ){
-    case SDL_QUIT:
-        throw std::runtime_error("Exit");
-        break;
-    default:
-        break;
-    }
-    
+    while(SDL_PollEvent(&event)) {
+        switch( event.type ) {
+          case SDL_QUIT:
+            throw std::runtime_error("Exit");
+          case SDL_KEYDOWN:
+            if(event.key.keysym.sym == SDLK_ESCAPE) {
+                throw std::runtime_error("Exit");
+            }
+            break;
+          default:
+            break;
+        }
+    } 
 }
 
 size_in_pixels_t sdl_graphics_context::get_screen_size() {
