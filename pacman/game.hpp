@@ -14,7 +14,6 @@ class game {
 	Sets first state as next state for game loop.
 	*/
 	game(std::unique_ptr<game_state>&& p_first_state);
-    ~game();
 	/**
 	Sets next state as current state. Runs game loop from current state. 
 	After starting the control is carried out from the current state.
@@ -26,11 +25,11 @@ class game {
   private:
 	std::unique_ptr<game_state> p_next_state_;
 	std::unique_ptr<game_state> p_current_state_;
-	std::unique_ptr<game_state> p_last_state_;
 	/**
 	Sets next state or terminate game loop.
 	*/
 	void set_next_state(std::unique_ptr<game_state>& p_next_state);
+    void setup_current_state();
 
     std::shared_ptr<graphics_context> p_graphics_ctx;
 
