@@ -1,4 +1,4 @@
-#include <opengl/opengl_context.hpp>
+#include "opengl_context.hpp"
 #include <GL/glew.h>
 #include <mathgl/mathgl.h>
 #include <stdexcept>

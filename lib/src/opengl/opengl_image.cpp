@@ -1,4 +1,4 @@
-#include <opengl/opengl_image.hpp>
+#include "opengl_image.hpp"
 
 #include <GL/glew.h>
 #include <SDL.h>

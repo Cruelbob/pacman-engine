@@ -2,9 +2,9 @@
 #include <stdexcept>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <mathgl.h>
+#include <mathgl/mathgl.h>
 
-#include <sdl/sdl_graphics_context.hpp>
+#include "sdl_graphics_context.hpp"
 #include <game.hpp>
 
 namespace pacman {

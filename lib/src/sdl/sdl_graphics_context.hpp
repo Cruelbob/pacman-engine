@@ -5,7 +5,7 @@
 #include <string>
 
 #include <graphics_context.hpp>
-#include <opengl/opengl_context.hpp>
+#include "../opengl/opengl_context.hpp"
 
 namespace pacman {
 class sdl_graphics_context: public graphics_context {

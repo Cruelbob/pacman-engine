@@ -4,7 +4,7 @@
 #include <memory>
 
 #include <pacman_defs.hpp>
-#include <opengl/opengl_image.hpp>
+#include "opengl_image.hpp"
 
 namespace pacman {
 class opengl_context {
