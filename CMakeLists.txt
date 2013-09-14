@@ -30,21 +30,19 @@ endif()
 
 add_definitions(-DNO_SDL_GLEXT)
 
-set(SOURCE_LIB pacman/game.cpp
-               pacman/game_state.cpp
-               pacman/sdl/sdl_graphics_context.cpp
-               pacman/opengl/opengl_context.cpp
-               pacman/opengl/opengl_image.cpp)
+file(GLOB_RECURSE SOURCE_LIB pacman/*.cpp
+                             pacman/*.hpp
+                             pacman/*.h)
 
-set(SOURCE_EXE game_state_example/game_state_example.cpp
-               game_state_example/sample_game_state.cpp)
+file(GLOB_RECURSE SOURCE_EXE game_state_example/*.cpp
+                             game_state_example/*.h)
 
 include_directories(pacman)
 include_directories(pacman/mathgl)
 include_directories(game_state_example)
 
-if (NOT DEFINED CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release")
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "release")
 endif()
 
 add_library(pacman_engine STATIC ${SOURCE_LIB})

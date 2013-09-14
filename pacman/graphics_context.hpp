@@ -11,4 +11,4 @@ class graphics_context: public user_graphics_context {
 
     virtual void render() = 0;
 };
-}
+} // namespace pacman

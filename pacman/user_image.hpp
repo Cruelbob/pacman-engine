@@ -9,12 +9,12 @@
 
 namespace pacman {
 class user_image {
-	user_image(const user_image& other);
-	user_image& operator=(const user_image& other);
+    user_image(const user_image& other);
+    user_image& operator=(const user_image& other);
   protected:
-	user_image() {}
+    user_image() {}
   public:
-	virtual ~user_image() {}
+    virtual ~user_image() {}
 
     /*virtual void load_from_stream(std::istream& input_stream,const image_format& format,size_in_pixels_t size = size_in_pixels_t()) = 0;
     virtual void load_from_file(std::string filename,image_format format = image_format::autoselect,size_in_pixels_t size = size_in_pixels_t());
@@ -32,4 +32,4 @@ class user_image {
     virtual float get_rotation_angle() = 0;
     //virtual bool has_image() = 0;
 };
-}
+} // namespace pacman

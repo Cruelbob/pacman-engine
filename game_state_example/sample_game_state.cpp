@@ -7,7 +7,7 @@
 void sample_game_state::initialize() {
     loading_image = get_graphics_context().create_image();
     
-    auto surface = SDL_LoadBMP("loading_image.bmp");
+    SDL_Surface* surface = SDL_LoadBMP("loading_image.bmp");
     pacman::size_in_pixels_t image_size(surface->w,surface->h);
     std::vector<uint8_t> img_buffer((uint8_t*)surface->pixels,
                                     (uint8_t*)surface->pixels+image_size.area()*3);
