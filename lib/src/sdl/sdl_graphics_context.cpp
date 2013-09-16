@@ -2,10 +2,10 @@
 #include <stdexcept>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <mathgl/mathgl.h>
+#include <pacman/mathgl/mathgl.h>
 
 #include "sdl_graphics_context.hpp"
-#include <game.hpp>
+#include <pacman/game.hpp>
 
 namespace pacman {
 std::shared_ptr<graphics_context> game::create_graphics_context() {
@@ -40,11 +40,7 @@ void sdl_graphics_context::render() {
     } 
 }
 
-size_in_pixels_t sdl_graphics_context::get_screen_size() {
-    return screen_size_;
-}
-
-std::shared_ptr<user_image> sdl_graphics_context::create_image() {
+std::shared_ptr<image> sdl_graphics_context::create_image() {
     return opengl_ctx.create_image();
 }
 

@@ -1,7 +1,10 @@
-#include "opengl_context.hpp"
-#include <GL/glew.h>
-#include <mathgl/mathgl.h>
 #include <stdexcept>
+
+#include <GL/glew.h>
+
+#include <pacman/mathgl/mathgl.h>
+#include "opengl_context.hpp"
+
 
 namespace pacman {
     opengl_context::opengl_context():
@@ -19,7 +22,7 @@ namespace pacman {
         }
     }
 
-    void opengl_context::initialize(size_in_pixels_t screen_size) {
+    void opengl_context::initialize(size2d screen_size) {
         screen_size_ = screen_size;
         if(glewInit() != GLEW_OK) {
             throw std::runtime_error("glew error");
@@ -148,7 +151,7 @@ namespace pacman {
         glDisableVertexAttribArray(attribute_texcoord);
     }
 
-    std::shared_ptr<user_image> opengl_context::create_image() {
+    std::shared_ptr<image> opengl_context::create_image() {
         auto p_image = std::make_shared<opengl_image>();
         images_.emplace_back(p_image);
         return p_image;
@@ -159,7 +162,7 @@ namespace pacman {
         if(shader == 0) {
             throw std::runtime_error("glCreateShader error");
         }
-        auto src_text = src.c_str();
+        const char* src_text = src.c_str();
         glShaderSource(shader,1,&src_text,NULL);
         glCompileShader(shader);
         int status;

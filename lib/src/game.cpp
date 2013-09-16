@@ -1,4 +1,4 @@
-#include <game.hpp>
+#include <pacman/game.hpp>
 
 namespace pacman {
 game::game(std::unique_ptr<game_state>&& p_first_state):
@@ -15,9 +15,8 @@ void game::operator()() {
         begin = now;
         p_current_state_->input(std::vector<input_event_t>());
         p_current_state_->update(delta);
-        p_graphics_ctx->render();
+        std::static_pointer_cast<base_graphics_context>(p_graphics_ctx)->render();
         if(p_next_state_) {
-            p_current_state_->pre_next_state();
             setup_current_state();
         }
     }

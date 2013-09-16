@@ -1,9 +1,9 @@
 #include <iostream>
-#include <game.hpp>
-#include "sample_game_state.h"
 #include <memory>
-#include <future>
 
+#include <pacman/game.hpp>
+
+#include "sample_game_state.h"
 
 int main(int argc, char **argv)
 {

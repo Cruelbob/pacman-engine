@@ -1,18 +1,16 @@
-#include "sample_game_state.h"
-#include <iostream>
-#include <thread>
-#include <fstream>
 #include <SDL.h>
+
+#include "sample_game_state.h"
 
 void sample_game_state::initialize() {
     loading_image = get_graphics_context().create_image();
     
     SDL_Surface* surface = SDL_LoadBMP("loading_image.bmp");
-    pacman::size_in_pixels_t image_size(surface->w,surface->h);
+    pacman::size2d image_size(surface->w,surface->h);
     std::vector<uint8_t> img_buffer((uint8_t*)surface->pixels,
                                     (uint8_t*)surface->pixels+image_size.area()*3);
     SDL_FreeSurface(surface);
-    loading_image->load_from_buffer(img_buffer,
+    loading_image->load_raw_image(img_buffer,
                                     pacman::image_buffer_format::raw_bgr,
                                     image_size);
     
@@ -21,20 +19,20 @@ void sample_game_state::initialize() {
                                         screen_size.height/2-image_size.height/2);
     loading_image->change_coords(image_coords);
 
-    loading_image2 = get_graphics_context().create_image();
+    loading_text = get_graphics_context().create_image();
     
     surface = SDL_LoadBMP("loading_text.bmp");
-    pacman::size_in_pixels_t image_size2(surface->w,surface->h);
+    pacman::size2d image_size2(surface->w,surface->h);
     img_buffer.assign((uint8_t*)surface->pixels,
                       (uint8_t*)surface->pixels+image_size2.area()*3);
     SDL_FreeSurface(surface);
     
-    loading_image2->load_from_buffer(img_buffer,
+    loading_text->load_raw_image(img_buffer,
                                      pacman::image_buffer_format::raw_bgr,
                                      image_size2);
     pacman::screen_point_t image_coords2(screen_size.width/2-image_size2.width/2,
                                          image_coords.y + image_size.height);
-    loading_image2->change_coords(image_coords2);
+    loading_text->change_coords(image_coords2);
 }
 
 void sample_game_state::update(const pacman::time_type& delta) {

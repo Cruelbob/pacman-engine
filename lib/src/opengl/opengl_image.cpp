@@ -1,16 +1,14 @@
-#include "opengl_image.hpp"
+#include <stdexcept>
 
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <stdexcept>
+
+#include "opengl_image.hpp"
 
 namespace pacman {
 opengl_image::opengl_image():
-  texture_id(0),
-  screen_position(0,0),
-  size_(0,0),
-  rotation_angle_(0.f) {
+  texture_id(0) {
     glGenTextures(1,&texture_id);
     glBindTexture(GL_TEXTURE_2D,texture_id);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -20,7 +18,7 @@ opengl_image::~opengl_image() {
     glDeleteTextures(1, &texture_id);
 }
 
-void opengl_image::load_from_buffer(const std::vector<uint8_t>& buffer,image_buffer_format format,size_in_pixels_t size) {
+void opengl_image::load_raw_image(const std::vector<uint8_t>& buffer,image_buffer_format format,size2d size) {
     glBindTexture(GL_TEXTURE_2D,texture_id);
     GLenum gl_format;
     switch (format) {
@@ -47,27 +45,6 @@ void opengl_image::load_from_buffer(const std::vector<uint8_t>& buffer,image_buf
                  GL_UNSIGNED_BYTE,
                  buffer.data());
     size_ = size;
-}
-
-void opengl_image::change_coords( screen_point_t coords )
-{
-    screen_position = coords;
-}
-
-screen_point_t opengl_image::get_coords() {
-    return screen_position;
-}
-
-size_in_pixels_t opengl_image::get_size() {
-    return size_;
-}
-
-void opengl_image::set_rotation_angle(float angle) {
-    rotation_angle_ = angle;
-}
-
-float opengl_image::get_rotation_angle() {
-    return rotation_angle_;
 }
 
 uint32_t opengl_image::get_texture_id() {
