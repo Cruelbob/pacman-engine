@@ -22,15 +22,15 @@ void sample_game_state::initialize() {
     loading_text = get_graphics_context().create_image();
     
     surface = SDL_LoadBMP("loading_text.bmp");
-    pacman::size2d image_size2(surface->w,surface->h);
+    pacman::size2d text_size(surface->w,surface->h);
     img_buffer.assign((uint8_t*)surface->pixels,
-                      (uint8_t*)surface->pixels+image_size2.area()*3);
+                      (uint8_t*)surface->pixels+text_size.area()*3);
     SDL_FreeSurface(surface);
     
     loading_text->load_raw_image(img_buffer,
                                      pacman::image_buffer_format::raw_bgr,
-                                     image_size2);
-    pacman::screen_point_t image_coords2(screen_size.width/2-image_size2.width/2,
+                                     text_size);
+    pacman::screen_point_t image_coords2(screen_size.width/2-text_size.width/2,
                                          image_coords.y + image_size.height);
     loading_text->change_coords(image_coords2);
 }
