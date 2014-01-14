@@ -1,0 +1,10 @@
+#ifndef FILEMANAGER_H
+#define FILEMANAGER_H
+
+namespace pacman {
+class FileManager {
+    
+};
+}
+
+#endif // FILEMANAGER_H
