@@ -13,9 +13,7 @@ Game::~Game() {
 
 Game::LoopResult Game::loop() {
     if(scene_) {
-#if UNIX
-        scene_->getFileManager().update();
-#endif
+        globalFileManager_.update();
         scene_->getInputManager().update();
         scene_->update();
         graphicsContext_.update();

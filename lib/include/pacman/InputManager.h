@@ -35,7 +35,7 @@ class InputManager {
     CallbackConnection addOnKeyEvent(const KeyEventCallback& keyEventCallback) {
         auto keyEventCallbackIt = keyEventCallbacks_->insert(keyEventCallbacks_->end(), keyEventCallback);
         std::weak_ptr<KeyEventCallbacks> keyEventCallbacksWeak = keyEventCallbacks_;
-        return CallbackConnection([keyEventCallbackIt, keyEventCallbacksWeak]() {
+        return CallbackConnection([keyEventCallbacksWeak, keyEventCallbackIt]() {
             auto keyEventCallbacks = keyEventCallbacksWeak.lock();
             if(keyEventCallbacks) {
                 keyEventCallbacks->erase(keyEventCallbackIt);

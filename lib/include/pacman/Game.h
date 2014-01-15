@@ -7,6 +7,7 @@
 #include "TaskQueue.h"
 #include "GraphicsContext.h"
 #include "GlobalTextureManager.h"
+#include "GlobalFileManager.h"
 
 namespace pacman {
 class GameScene;
@@ -28,12 +29,14 @@ class Game {
 
     GameScene& getCurrentGameScene() { return *scene_; }
     GlobalTextureManager& getGlobalTextureManager() { return globalTextureManager_; }
+    GlobalFileManager& getGlobalFileManager() { return globalFileManager_; }
   private:
     TaskQueue taskQueue_;
     std::unique_ptr<GameScene> nextScene_;
     std::unique_ptr<GameScene> scene_;
     GraphicsContext graphicsContext_;
     GlobalTextureManager globalTextureManager_;
+    GlobalFileManager globalFileManager_;
 };
 } // namespace pacman
 

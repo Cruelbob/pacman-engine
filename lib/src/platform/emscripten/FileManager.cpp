@@ -6,6 +6,19 @@ using namespace pacman;
 typedef void (*OnLoad)(void*,void*,int);
 typedef void (*OnError)(void*);
 
+class FileManager::EmscriptenLoadingInfo  {
+  public:
+      EmscriptenLoadingInfo(const std::weak_ptr<LoadingFiles>& loadingFiles,
+                            const LoadingFiles::iterator& loadingFileInfoIt):
+          loadingFiles_(loadingFiles),
+          loadingFileInfoIt_(loadingFileInfoIt) {}
+
+      const std::weak_ptr<LoadingFiles>& getLoadingFiles() { return loadingFiles_; }
+      const LoadingFiles::iterator& getLoadingFileInfoIt() const { return loadingFileInfoIt_; }
+  private:
+      std::weak_ptr<LoadingFiles> loadingFiles_;
+      LoadingFiles::iterator loadingFileInfoIt_;
+};
 
 
 void FileManager::loadFileFromAddr(const std::string &filename, const LoadingCallback &loadingCallback)

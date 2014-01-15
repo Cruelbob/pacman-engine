@@ -18,7 +18,7 @@ bool decode_png(const array_view<uint8_t>& encoded,
                 uint16_t& heightOut);
 
 void GlobalTextureManager::onTextureLoad(const std::weak_ptr<Texture>& textureWeak,
-                                         const FileManager::LoadingFile& loadingFile)
+                                         const LoadingFile& loadingFile)
 {
     auto texture = textureWeak.lock();
     if(texture) {

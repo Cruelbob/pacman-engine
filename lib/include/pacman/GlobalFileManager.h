@@ -1,7 +1,6 @@
 #ifndef GLOBALFILEMANAGER_H
 #define GLOBALFILEMANAGER_H
 
-namespace pacman {
 #include <functional>
 #include <vector>
 #include <cstdint>
@@ -33,67 +32,63 @@ class LoadingFile {
     LoadingFile& operator=(const LoadingFile&) = delete;
 
     LoadingFile(const std::string& filename,
-                const BufferView& bufferView = BufferView(),
-                LoadingStatus loadingStatus = LoadingStatus::FAILURE):
+                LoadingStatus loadingStatus,
+                const BufferView& bufferView = BufferView()):
         filename_(filename),
-        bufferView_(bufferView),
-        loadingStatus_(loadingStatus) {}
+        loadingStatus_(loadingStatus),
+        bufferView_(bufferView) {}
 
     const std::string& getFilename() const { return filename_; }
     LoadingStatus getStatus() const { return loadingStatus_; }
     const BufferView& getBufferView() const { return bufferView_; }
   private:
     const std::string& filename_;
+    const LoadingStatus loadingStatus_;
     const BufferView bufferView_;
-    LoadingStatus loadingStatus_;
 };
 
-class FileManager {
+class GlobalFileManager {
   public:
     typedef std::function<void (const LoadingFile&)> LoadingCallback;
 
-    FileManager(): loadingFiles_(std::make_shared<LoadingFiles>()) {}
-    ~FileManager();
+    GlobalFileManager(): loadingFiles_(std::make_shared<LoadingFiles>()) {}
 
-#if UNIX
     void update();
-#endif
 
-    void setBase(const std::string& base) { base_ = base; }
-    CallbackConnection loadFileFromAddr(const std::string& filename, const LoadingCallback& loadingCallback);
-    CallbackConnection loadFile(const std::string& filename, const LoadingCallback& loadingCallback) {
-        return loadFileFromAddr(base_ + filename, loadingCallback);
-    }
+    ScopedCallbackConnection loadFileFromAddr(const std::string& filename, const LoadingCallback& loadingCallback);
   private:
-    std::string base_;
-
     class LoadingFileInfo {
       public:
-        LoadingFileInfo(const std::string& filename, const LoadingCallback& loadingCallback):
-            filename_(filename), loadingCallback_(loadingCallback)
-#if UNIX
-            ,fd_(-1), aiocb_{0}
-#endif
-        {}
+        class PlatformInfo {
+          public:
+            PlatformInfo()
+        #if UNIX
+            : aiocb_({}) {}
+        #elif EMSCRIPTEN
+            {}
+        #endif
 
-#if UNIX
-        typedef std::vector<uint8_t> Buffer;
+        #if UNIX
+            aiocb& get_aiocb() { return aiocb_; }
+        #endif
+          private:
+        #if UNIX
+            aiocb aiocb_; //TODO: close file
+        #endif
+        };
 
-        int get_fd() const { return fd_; }
-        void set_fd(int fd) { fd_ = fd; }
-        aiocb& get_aiocb() { return aiocb_; }
-        Buffer& getBuffer() { return buffer_; }
-#endif
+        LoadingFileInfo(const std::string& filename, const LoadingCallback& callback):
+            filename_(filename), callback_(callback) {}
+
+        PlatformInfo& getPlatformInfo() {return platformInfo_; }
+
         const std::string& getFilename() const { return filename_; }
-        const LoadingCallback& getLoadingCallback() const { return loadingCallback_; }
+        const LoadingCallback& getCallback() const { return callback_; }
       private:
         const std::string filename_;
-        const LoadingCallback loadingCallback_;
-#if UNIX
-        Buffer buffer_;
-        int fd_;
-        aiocb aiocb_;
-#endif
+        const LoadingCallback callback_;
+        LoadingFile::LoadingStatus status;
+        PlatformInfo platformInfo_;
     };
 
     typedef std::list<LoadingFileInfo> LoadingFiles;
@@ -101,22 +96,10 @@ class FileManager {
     std::shared_ptr<LoadingFiles> loadingFiles_;
 
 #if EMSCRIPTEN
-    class EmscriptenLoadingInfo  {
-      public:
-        EmscriptenLoadingInfo(const std::weak_ptr<LoadingFiles>& loadingFiles,
-                              const LoadingFiles::iterator& loadingFileInfoIt):
-            loadingFiles_(loadingFiles),
-            loadingFileInfoIt_(loadingFileInfoIt) {}
+    typedef std::weak_ptr<LoadingFiles::iterator> EmscriptenLoadingFileInfo;
 
-        const std::weak_ptr<LoadingFiles>& getLoadingFiles() { return loadingFiles_; }
-        const LoadingFiles::iterator& getLoadingFileInfoIt() const { return loadingFileInfoIt_; }
-      private:
-        std::weak_ptr<LoadingFiles> loadingFiles_;
-        LoadingFiles::iterator loadingFileInfoIt_;
-    };
-
-    static void onLoad(EmscriptenLoadingInfo *emscriptenLoadingInfo, uint8_t* data, int size);
-    static void onError(EmscriptenLoadingInfo *emscriptenLoadingInfo);
+    static void onLoad(EmscriptenLoadingFileInfo* loadingFileInfo, uint8_t* data, int size);
+    static void onError(EmscriptenLoadingFileInfo* loadingFileInfo);
 #endif
 };
 } // namespace pacman
