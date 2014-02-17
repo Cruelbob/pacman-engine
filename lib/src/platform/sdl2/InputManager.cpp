@@ -14,7 +14,7 @@ void InputManager::update()
           case SDL_KEYDOWN:
             switch(event.key.keysym.scancode) {
               case SDL_SCANCODE_ESCAPE:
-                for(auto& keyEventCallback : *keyEventCallbacks_) {
+                for(auto& keyEventCallback : keyEventCallbacks_) {
                     keyEventCallback(KeyEvent(KeyEvent::Type::DOWN, KeyEvent::Key::ESC));
                 }
               default:

@@ -9,67 +9,105 @@
 #include "pacman/GlobalFileManager.h"
 
 using namespace pacman;
+using namespace FileIO;
 
-//FileManager::~FileManager()
-//{
-//    for(auto& loadingFileInfo : *loadingFilesInfoArr_) {
-//        aio_cancel(loadingFileInfo.get_fd(), &loadingFileInfo.get_aiocb());
-//    }
-//    while(!loadingFilesInfoArr_->empty());
-//}
+GlobalFileManager::~GlobalFileManager() {
+}
 
-//void FileManager::update()
-//{
-//    for(LoadingFiles::iterator loadingFileInfoIt = loadingFilesInfoArr_->begin();
-//        loadingFileInfoIt != loadingFilesInfoArr_->end();)
-//    {
-//        LoadingFiles::iterator tempIt = loadingFileInfoIt++;
-//        LoadingFileInfo& loadingFileInfo = *tempIt;
-//        int err = aio_error(&loadingFileInfo.get_aiocb());
+void GlobalFileManager::update()
+{
+    for(auto fileIt = loadingFiles_.begin(); fileIt != loadingFiles_.end();) {
+        if((*fileIt)->update()) {
+            ++fileIt;
+        } else {
+            fileIt = loadingFiles_.erase(fileIt);
+        }
+    }
+}
 
-//        if(err == EINPROGRESS) {
-//            continue;
-//        }
+ScopedCallbackConnection GlobalFileManager::loadFile(const std::string &filename, const LoadingCallback &callback) {
+    auto filePtr = std::make_shared<LoadingFile>();
+    if(!filePtr->init(filename, callback)) {
+        return CallbackConnection();
+    }
+    loadingFiles_.emplace_back(filePtr);
 
-//        LoadingStatus loadingStatus = LoadingStatus::SUCCESS;
-//        if(err == ECANCELED) {
-//            loadingStatus = LoadingStatus::CANCELED;
-//        }
-//        assert(err == 0);
-//        aio_return(&loadingFileInfo.get_aiocb());
-//        LoadingFile loadingFile(loadingFileInfo.getFilename(), loadingFileInfo.getBuffer(), loadingStatus);
-//        loadingFileInfo.getLoadingCallback()(loadingFile);
-//        loadingFilesInfoArr_->erase(tempIt);
-//    }
-//}
+    std::weak_ptr<LoadingFile> fileWeakPtr = filePtr;
+    return CallbackConnection([fileWeakPtr] {
+        auto filePtr = fileWeakPtr.lock();
+        if(filePtr) {
+            filePtr->cancel();
+        }
+    });
+}
 
-//CallbackConnection FileManager::loadFileFromAddr(const std::string &filename, const LoadingCallback &loadingCallback) {
-//    int fd = open(filename.c_str(), O_RDONLY, 0);
-//    if (fd == -1) {
-//        loadingCallback(LoadingFile(filename));
-//        return CallbackConnection();
-//    }
+GlobalFileManager::LoadingFile::~LoadingFile() {
+    cancel();
+    while(update());
+}
 
-//    off_t fullSize = lseek(fd, 0, SEEK_END);
-//    assert(fullSize != -1);
-//    lseek(fd, 0, SEEK_SET);
+bool GlobalFileManager::LoadingFile::init(const std::string& filename, const LoadingCallback& callback) {
+    int fd = open(filename.c_str(), O_RDONLY, 0);
+    if (fd == -1) {
+        callback(filename, LoadingStatus::FAILURE, array_view<uint8_t>());
+        return false;
+    }
 
-//    auto loadingFileInfoIt = loadingFilesInfoArr_->emplace(loadingFilesInfoArr_->end(), filename, loadingCallback);
+    off_t fullSize = lseek(fd, 0, SEEK_END);
+    assert(fullSize != -1);
+    lseek(fd, 0, SEEK_SET);
 
-//    loadingFileInfoIt->set_fd(fd);
-//    loadingFileInfoIt->getBuffer().resize(fullSize);
+    buffer_.resize(fullSize);
+    aiocb* aiocbPtr = (aiocb*)std::malloc(sizeof(aiocb));
+    std::memset(aiocbPtr, 0, sizeof(aiocb));
+    aiocbPtr->aio_nbytes = fullSize;
+    aiocbPtr->aio_fildes = fd;
+    aiocbPtr->aio_buf = buffer_.data();
+    aiocb_.reset(aiocbPtr,[](aiocb* aiocbPtr) {
+        close(aiocbPtr->aio_fildes);
+        std::free(aiocbPtr);
+    });
 
-//    loadingFileInfoIt->get_aiocb().aio_nbytes = fullSize;
-//    loadingFileInfoIt->get_aiocb().aio_fildes = fd;
-//    loadingFileInfoIt->get_aiocb().aio_buf = loadingFileInfoIt->getBuffer().data();
+    assert(aio_read(aiocb_.get()) != -1);
 
-//    assert(aio_read(&loadingFileInfoIt->get_aiocb()) != -1);
+    filename_ = filename;
+    callback_ = callback;
 
-//    std::weak_ptr<LoadingFiles> loadingFilesWeak = loadingFilesInfoArr_;
-//    return CallbackConnection([loadingFilesWeak, loadingFileInfoIt] {
-//        auto loadingFiles = loadingFilesWeak.lock();
-//        if(loadingFiles) {
-//            loadingFiles->erase(loadingFileInfoIt);
-//        }
-//    });
-//}
+    return true;
+}
+
+bool GlobalFileManager::LoadingFile::update() {
+    bool inProgress = false;
+    if(aiocb_) {
+        int err =  aio_error(aiocb_.get());
+        switch(err) {
+          case EINPROGRESS:
+            inProgress = true;
+            break;
+          case 0:
+            aiocb_.reset();
+            if(callback_) {
+                callback_(filename_, LoadingStatus::SUCCESS, buffer_);
+            }
+            break;
+          default:
+            aiocb_.reset();
+            if(callback_) {
+                callback_(filename_, LoadingStatus::FAILURE, array_view<uint8_t>());
+            }
+            break;
+        };
+    }
+    return inProgress;
+}
+
+void GlobalFileManager::LoadingFile::cancel() {
+    if(aiocb_) {
+        int err = aio_cancel(aiocb_->aio_fildes, aiocb_.get());
+        if(err == AIO_CANCELED) {
+            aiocb_.reset();
+        }
+        callback_(filename_, LoadingStatus::CANCELED, array_view<uint8_t>());
+        callback_ = nullptr;
+    }
+}

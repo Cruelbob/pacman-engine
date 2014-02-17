@@ -9,7 +9,7 @@ using namespace pacman;
 std::unique_ptr<Game> game;
 
 void mainLoop() {
-    if(game->loop() == Game::LoopResult::EXIT) {
+    if(!game->loop()) {
         game.reset();
         emscripten_cancel_main_loop();
     }

@@ -17,91 +17,67 @@
 #include "CallbackConnection.h"
 
 namespace pacman {
-class LoadingFile {
-  public:
-    enum class LoadingStatus {
-        SUCCESS,
-        FAILURE,
-        CANCELED
-    };
-
-    typedef array_view<uint8_t> BufferView;
-
-    LoadingFile() = delete;
-    LoadingFile(const LoadingFile&) = delete;
-    LoadingFile& operator=(const LoadingFile&) = delete;
-
-    LoadingFile(const std::string& filename,
-                LoadingStatus loadingStatus,
-                const BufferView& bufferView = BufferView()):
-        filename_(filename),
-        loadingStatus_(loadingStatus),
-        bufferView_(bufferView) {}
-
-    const std::string& getFilename() const { return filename_; }
-    LoadingStatus getStatus() const { return loadingStatus_; }
-    const BufferView& getBufferView() const { return bufferView_; }
-  private:
-    const std::string& filename_;
-    const LoadingStatus loadingStatus_;
-    const BufferView bufferView_;
+namespace FileIO {
+enum class LoadingStatus {
+    SUCCESS,
+    FAILURE,
+    CANCELED
 };
+
+typedef std::function<void (const std::string& /* filename */,
+                            LoadingStatus /* status */,
+                            const array_view<uint8_t>&) /* fileData */> LoadingCallback;
 
 class GlobalFileManager {
   public:
-    typedef std::function<void (const LoadingFile&)> LoadingCallback;
+    GlobalFileManager() = default;
+#ifdef UNIX
+    ~GlobalFileManager();
+#elif EMSCRIPTEN
+    ~GlobalFileManager() = default;
+#endif
 
-    GlobalFileManager(): loadingFiles_(std::make_shared<LoadingFiles>()) {}
-
+#if UNIX
     void update();
+#endif
 
-    ScopedCallbackConnection loadFileFromAddr(const std::string& filename, const LoadingCallback& loadingCallback);
+    ScopedCallbackConnection loadFile(const std::string& filename, const LoadingCallback& loadingCallback);
   private:
-    class LoadingFileInfo {
+    class LoadingFile: public std::enable_shared_from_this<LoadingFile> {
       public:
-        class PlatformInfo {
-          public:
-            PlatformInfo()
-        #if UNIX
-            : aiocb_({}) {}
-        #elif EMSCRIPTEN
-            {}
-        #endif
+        LoadingFile()
+#if UNIX
+          : aiocb_(nullptr)
+#endif
+        {}
 
-        #if UNIX
-            aiocb& get_aiocb() { return aiocb_; }
-        #endif
-          private:
-        #if UNIX
-            aiocb aiocb_; //TODO: close file
-        #endif
-        };
+        ~LoadingFile();
 
-        LoadingFileInfo(const std::string& filename, const LoadingCallback& callback):
-            filename_(filename), callback_(callback) {}
-
-        PlatformInfo& getPlatformInfo() {return platformInfo_; }
-
-        const std::string& getFilename() const { return filename_; }
-        const LoadingCallback& getCallback() const { return callback_; }
+        bool init(const std::string& filename, const LoadingCallback& callback);
+        void cancel();
+#if UNIX
+        bool update();
+#endif
       private:
-        const std::string filename_;
-        const LoadingCallback callback_;
-        LoadingFile::LoadingStatus status;
-        PlatformInfo platformInfo_;
+        std::string filename_;
+        LoadingCallback callback_;
+
+#if UNIX
+        std::shared_ptr<aiocb> aiocb_;
+        std::vector<uint8_t> buffer_;
+#elif EMSCRIPTEN
+        static void onLoad(std::shared_ptr<LoadingFile>* file, uint8_t* data, int size);
+        static void onError(std::shared_ptr<LoadingFile>* file);
+#endif
     };
 
-    typedef std::list<LoadingFileInfo> LoadingFiles;
+#if UNIX
+    typedef std::list<std::shared_ptr<LoadingFile>> LoadingFiles;
 
-    std::shared_ptr<LoadingFiles> loadingFiles_;
-
-#if EMSCRIPTEN
-    typedef std::weak_ptr<LoadingFiles::iterator> EmscriptenLoadingFileInfo;
-
-    static void onLoad(EmscriptenLoadingFileInfo* loadingFileInfo, uint8_t* data, int size);
-    static void onError(EmscriptenLoadingFileInfo* loadingFileInfo);
+    LoadingFiles loadingFiles_;
 #endif
 };
+} // namespace FileIO
 } // namespace pacman
 
 #endif // GLOBALFILEMANAGER_H

@@ -17,13 +17,11 @@ class CallbackConnection {
         disconnectCallback_(std::move(other.disconnectCallback_))
     {
         other.disconnectCallback_ = nullptr;
-        //TODO: = default ( function moving doesnt work properly)
     }
 
     CallbackConnection& operator=(CallbackConnection&& other) {
         disconnectCallback_ = std::move(other.disconnectCallback_);
         other.disconnectCallback_ = nullptr;
-        //TODO: = default ( function moving doesnt work properly)
         return *this;
     }
 
@@ -40,7 +38,7 @@ class CallbackConnection {
 class ScopedCallbackConnection {
   public:
     ScopedCallbackConnection() = default;
-    ScopedCallbackConnection(ScopedCallbackConnection&&) = delete;
+    ScopedCallbackConnection(ScopedCallbackConnection&&) = default;
     ScopedCallbackConnection(CallbackConnection&& callbackConnection):
         callbackConnection_(std::move(callbackConnection)) {}
     ~ScopedCallbackConnection() {

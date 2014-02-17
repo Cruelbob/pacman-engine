@@ -30,7 +30,6 @@ endif()
 
 file(GLOB SOURCE_LIB
     src/*.cpp
-#    src/*.h
     include/*.h
     include/pacman/*.h
 )

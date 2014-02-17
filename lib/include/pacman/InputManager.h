@@ -30,23 +30,17 @@ class InputManager {
   public:
     typedef std::function<void (const KeyEvent&)> KeyEventCallback;
 
-    InputManager(): keyEventCallbacks_(std::make_shared<KeyEventCallbacks>()) {}
-
     CallbackConnection addOnKeyEvent(const KeyEventCallback& keyEventCallback) {
-        auto keyEventCallbackIt = keyEventCallbacks_->insert(keyEventCallbacks_->end(), keyEventCallback);
-        std::weak_ptr<KeyEventCallbacks> keyEventCallbacksWeak = keyEventCallbacks_;
-        return CallbackConnection([keyEventCallbacksWeak, keyEventCallbackIt]() {
-            auto keyEventCallbacks = keyEventCallbacksWeak.lock();
-            if(keyEventCallbacks) {
-                keyEventCallbacks->erase(keyEventCallbackIt);
-            }
+        auto keyEventCallbackIt = keyEventCallbacks_.emplace(keyEventCallbacks_.end(), keyEventCallback);
+        return CallbackConnection([this, keyEventCallbackIt]() {
+            keyEventCallbacks_.erase(keyEventCallbackIt);
         });
     }
 
     void update();
   private:
     typedef std::list<KeyEventCallback> KeyEventCallbacks;
-    std::shared_ptr<KeyEventCallbacks> keyEventCallbacks_;
+    KeyEventCallbacks keyEventCallbacks_;
 };
 } // namespace pacman
 

@@ -1,5 +1,5 @@
-#ifndef TEXTUREMANAGER_H
-#define TEXTUREMANAGER_H
+#ifndef GLOBALTEXTUREMANAGER_H
+#define GLOBALTEXTUREMANAGER_H
 
 #include <string>
 #include <memory>
@@ -16,11 +16,13 @@ class GlobalTextureManager {
 
     std::shared_ptr<Texture> getTexture(const std::string& name);
   private:
-    typedef std::unordered_map<std::string,std::weak_ptr<Texture>> Textures;
+    typedef std::unordered_map<std::string, std::weak_ptr<Texture>> Textures;
+    typedef std::unordered_map<std::string, CallbackConnection> Callbacks;
 
     Game& game_;
     Textures textures_;
+    Callbacks callbacks;
 };
-}
+} // namespace pacman
 
-#endif // TEXTUREMANAGER_H
+#endif // GLOBALTEXTUREMANAGER_H

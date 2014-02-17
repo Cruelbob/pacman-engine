@@ -11,28 +11,30 @@ Game::~Game() {
 
 }
 
-Game::LoopResult Game::loop() {
+bool Game::loop() {
     if(scene_) {
+#if UNIX
         globalFileManager_.update();
+#endif
         scene_->getInputManager().update();
         scene_->update();
         graphicsContext_.update();
         taskQueue_.executeTasks(taskQueue_.getSize());
-        return LoopResult::CONTINUE;
+        return true;
+    } else {
+        return false;
     }
-    return LoopResult::EXIT;
 }
 
-void Game::postNextState(std::unique_ptr<GameScene>&& nextSceneUnique) {
+void Game::postNextState(std::unique_ptr<GameScene>&& nextScene) {
     if(scene_) {
-        GameScene* nextScene = nextSceneUnique.release();
-        taskQueue_.post([nextScene, this] {
-            scene_.reset(nextScene);
-            scene_->setGame(this);
-            scene_->initialize();
+        GameScene * nextSceneRawPtr = nextScene.release();
+        taskQueue_.post([this, nextSceneRawPtr] {
+            scene_.reset();
+            postNextState(std::unique_ptr<GameScene>(nextSceneRawPtr));
         });
     } else {
-        scene_ = std::move(nextSceneUnique);
+        scene_ = std::move(nextScene);
         scene_->setGame(this);
         scene_->initialize();
     }

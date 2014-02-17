@@ -9,6 +9,6 @@ int main() {
     if(res) {
         return res;
     }
-    while(game.loop() == Game::LoopResult::CONTINUE);
+    while(game.loop());
     return 0;
 }

@@ -4,22 +4,16 @@
 #include "pacman/Game.h"
 
 using namespace pacman;
+using namespace FileIO;
 
-void FileManager::loadFileFromAddr(const std::string &filename,
-                                                 const LoadingCallback &loadingCallback)
-{
-    std::weak_ptr<LoadingFiles> loadingFilesInfoArrWeak = loadingFilesInfoArr_;
-    auto loadingFileInfoIt = loadingFilesInfoArr_->emplace(loadingFilesInfoArr_->end(), loadingCallback);
-    auto localLoadingCallback = [loadingFilesInfoArrWeak,
-                                 loadingFileInfoIt](const LoadingFile& loadingFile)
-    {
-        auto loadingFilesInfoArr = loadingFilesInfoArrWeak.lock();
-        if(loadingFilesInfoArr) {
-            loadingFileInfoIt->getCallback()(loadingFile);
-            loadingFilesInfoArr->erase(loadingFileInfoIt);
+void FileManager::loadFile(const std::string &filename, const LoadingCallback &loadingCallback) {
+    auto localInfoIt = loadingFiles_.emplace(loadingFiles_.end(), loadingCallback);
+    auto localCallback =
+    [this,localInfoIt](const std::string& filename, LoadingStatus status, const array_view<uint8_t>& buffer) {
+        localInfoIt->getCallback()(filename, status, buffer);
+        if(status != LoadingStatus::CANCELED) {
+            loadingFiles_.erase(localInfoIt);
         }
     };
-    GlobalFileManager& globalFileManager = gameScene_.getGame().getGlobalFileManager();
-    loadingFileInfoIt->setCallbackConnection(globalFileManager.loadFileFromAddr(filename,
-                                                                                localLoadingCallback));
+    localInfoIt->setCallbackConnection(gameScene_.getGame().getGlobalFileManager().loadFile(filename, localCallback));
 }

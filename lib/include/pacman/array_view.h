@@ -283,7 +283,7 @@ public:
     }
     constexpr const_reference at(size_type const n) const
     {
-        if (n >= length_) throw std::out_of_range("array_view::at()");
+        //if (n >= length_) throw std::out_of_range("array_view::at()");
         return *(data_ + n);
     }
     constexpr const_pointer data() const noexcept
