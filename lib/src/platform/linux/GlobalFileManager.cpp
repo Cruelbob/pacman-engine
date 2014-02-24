@@ -54,21 +54,27 @@ bool GlobalFileManager::LoadingFile::init(const std::string& filename, const Loa
     }
 
     off_t fullSize = lseek(fd, 0, SEEK_END);
-    assert(fullSize != -1);
+    if(fullSize == -1) {
+        callback(filename, LoadingStatus::FAILURE, array_view<uint8_t>());
+    }
     lseek(fd, 0, SEEK_SET);
 
     buffer_.resize(fullSize);
     aiocb* aiocbPtr = (aiocb*)std::malloc(sizeof(aiocb));
     std::memset(aiocbPtr, 0, sizeof(aiocb));
-    aiocbPtr->aio_nbytes = fullSize;
     aiocbPtr->aio_fildes = fd;
+    aiocbPtr->aio_nbytes = fullSize;
     aiocbPtr->aio_buf = buffer_.data();
+    aiocbPtr->aio_offset = 0;
     aiocb_.reset(aiocbPtr,[](aiocb* aiocbPtr) {
         close(aiocbPtr->aio_fildes);
         std::free(aiocbPtr);
     });
 
-    assert(aio_read(aiocb_.get()) != -1);
+    int err = aio_read(aiocb_.get());
+    if(err) {
+        callback(filename, LoadingStatus::FAILURE, array_view<uint8_t>());
+    }
 
     filename_ = filename;
     callback_ = callback;
@@ -77,28 +83,23 @@ bool GlobalFileManager::LoadingFile::init(const std::string& filename, const Loa
 }
 
 bool GlobalFileManager::LoadingFile::update() {
-    bool inProgress = false;
     if(aiocb_) {
         int err =  aio_error(aiocb_.get());
-        switch(err) {
-          case EINPROGRESS:
-            inProgress = true;
-            break;
-          case 0:
+        if(err == EINPROGRESS) {
+            return true;
+        } else {
+            ssize_t res = aio_return(aiocb_.get());
             aiocb_.reset();
             if(callback_) {
-                callback_(filename_, LoadingStatus::SUCCESS, buffer_);
+                if(res == static_cast<ssize_t>(buffer_.size())) {
+                    callback_(filename_, LoadingStatus::SUCCESS, buffer_);
+                } else {
+                    callback_(filename_, LoadingStatus::FAILURE, array_view<uint8_t>());
+                }
             }
-            break;
-          default:
-            aiocb_.reset();
-            if(callback_) {
-                callback_(filename_, LoadingStatus::FAILURE, array_view<uint8_t>());
-            }
-            break;
-        };
+        }
     }
-    return inProgress;
+    return false;
 }
 
 void GlobalFileManager::LoadingFile::cancel() {
