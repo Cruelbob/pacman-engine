@@ -37,8 +37,12 @@ class CallbackConnection {
 
 class ScopedCallbackConnection {
   public:
+    typedef std::function<void ()> DisconnectCallback;
+
     ScopedCallbackConnection() = default;
     ScopedCallbackConnection(ScopedCallbackConnection&&) = default;
+    ScopedCallbackConnection(const DisconnectCallback& disconnectCallback):
+        callbackConnection_(disconnectCallback) {}
     ScopedCallbackConnection(CallbackConnection&& callbackConnection):
         callbackConnection_(std::move(callbackConnection)) {}
     ~ScopedCallbackConnection() {

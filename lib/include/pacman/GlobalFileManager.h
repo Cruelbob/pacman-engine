@@ -31,11 +31,7 @@ typedef std::function<void (const std::string& /* filename */,
 class GlobalFileManager {
   public:
     GlobalFileManager() = default;
-#ifdef UNIX
-    ~GlobalFileManager();
-#elif EMSCRIPTEN
     ~GlobalFileManager() = default;
-#endif
 
 #if UNIX
     void update();

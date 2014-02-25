@@ -21,15 +21,14 @@ class Game {
     void postNextState(std::unique_ptr<GameScene>&& nextScene);
     void postExit();
 
-    GameScene& getCurrentGameScene() { return *scene_; }
     GlobalTextureManager& getGlobalTextureManager() { return globalTextureManager_; }
     FileIO::GlobalFileManager& getGlobalFileManager() { return globalFileManager_; }
   private:
-    TaskQueue taskQueue_;
-    std::unique_ptr<GameScene> scene_;
-    GraphicsContext graphicsContext_;
     GlobalTextureManager globalTextureManager_;
     FileIO::GlobalFileManager globalFileManager_;
+    GraphicsContext graphicsContext_;
+    TaskQueue taskQueue_;
+    std::unique_ptr<GameScene> scene_;
 };
 } // namespace pacman
 

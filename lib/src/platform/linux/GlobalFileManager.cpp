@@ -11,9 +11,6 @@
 using namespace pacman;
 using namespace FileIO;
 
-GlobalFileManager::~GlobalFileManager() {
-}
-
 void GlobalFileManager::update()
 {
     for(auto fileIt = loadingFiles_.begin(); fileIt != loadingFiles_.end();) {
@@ -28,12 +25,11 @@ void GlobalFileManager::update()
 ScopedCallbackConnection GlobalFileManager::loadFile(const std::string &filename, const LoadingCallback &callback) {
     auto filePtr = std::make_shared<LoadingFile>();
     if(!filePtr->init(filename, callback)) {
-        return CallbackConnection();
+        return ScopedCallbackConnection();
     }
-    loadingFiles_.emplace_back(filePtr);
-
     std::weak_ptr<LoadingFile> fileWeakPtr = filePtr;
-    return CallbackConnection([fileWeakPtr] {
+    loadingFiles_.emplace_back(std::move(filePtr));
+    return ScopedCallbackConnection([fileWeakPtr] {
         auto filePtr = fileWeakPtr.lock();
         if(filePtr) {
             filePtr->cancel();
@@ -56,6 +52,8 @@ bool GlobalFileManager::LoadingFile::init(const std::string& filename, const Loa
     off_t fullSize = lseek(fd, 0, SEEK_END);
     if(fullSize == -1) {
         callback(filename, LoadingStatus::FAILURE, array_view<uint8_t>());
+        close(fd);
+        return false;
     }
     lseek(fd, 0, SEEK_SET);
 
@@ -74,6 +72,7 @@ bool GlobalFileManager::LoadingFile::init(const std::string& filename, const Loa
     int err = aio_read(aiocb_.get());
     if(err) {
         callback(filename, LoadingStatus::FAILURE, array_view<uint8_t>());
+        return false;
     }
 
     filename_ = filename;
@@ -108,7 +107,9 @@ void GlobalFileManager::LoadingFile::cancel() {
         if(err == AIO_CANCELED) {
             aiocb_.reset();
         }
-        callback_(filename_, LoadingStatus::CANCELED, array_view<uint8_t>());
-        callback_ = nullptr;
+        if(callback_) {
+            callback_(filename_, LoadingStatus::CANCELED, array_view<uint8_t>());
+            callback_ = nullptr;
+        }
     }
 }

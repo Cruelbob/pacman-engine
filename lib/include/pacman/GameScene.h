@@ -9,7 +9,7 @@ namespace pacman {
 class Game;
 class GameScene {
   public:
-    GameScene(): game_(nullptr), fileManager_(*this) , textureManager_(*this) {}
+    GameScene(): game_(nullptr), fileManager_(*this) , textureManager_(*this), isReady_(false) {}
     virtual ~GameScene() {}
 
     void setGame(Game* game) { game_ = game; }
@@ -19,7 +19,7 @@ class GameScene {
 
     FileIO::FileManager& getFileManager() { return fileManager_; }
     InputManager& getInputManager() { return inputManager_; }
-    Game& getGame() const { return *game_; }
+    Game& getGame() { return *game_; }
   protected:
     void isReady(bool isReady) { isReady_ = isReady; }
   private:

@@ -2,30 +2,41 @@
 #include <functional>
 
 #include <pacman.h>
-#include <pacman/Game.h>
 #include <pacman/GameScene.h>
+#include <pacman/Game.h>
 
 using namespace pacman;
 using namespace std::placeholders;
 
 const std::string TEST_FILE = "test.txt";
+const std::string TEST_FILE_1 = "not_file.txt";
 
-class DummyGameScene: public GameScene
-{
+class DummyGameScene: public GameScene {
     void initialize() {
-        std::cout << "loadFile from DummyGameScene\n";
-        getFileManager().loadFile(TEST_FILE, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
+        getGame().getGlobalFileManager().loadFile(TEST_FILE, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
     }
 
     void onFile(const std::string& filename, FileIO::LoadingStatus status, const array_view<uint8_t>& fileData) {
-        if(status == FileIO::LoadingStatus::SUCCESS) {
+        switch (status) {
+          case FileIO::LoadingStatus::SUCCESS:
+          {
             std::string content(fileData.begin(), fileData.end());
             std::cout << "Content of " << filename << ":\"" << content << "\"\n";
-        }  else {
+            std::cout << "postExit from DummyGameScene\n";
+            getGame().postExit();
+            break;
+          }
+          case FileIO::LoadingStatus::FAILURE:
             std::cout << "Loading of " << filename << " failed\n";
+            getFileManager().loadFile(TEST_FILE, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
+            break;
+          case FileIO::LoadingStatus::CANCELED:
+            std::cout << "Loading of " << filename << " canceled\n";
+            getFileManager().loadFile(TEST_FILE_1, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
+            break;
+          default:
+            break;
         }
-        std::cout << "postExit from DummyGameScene\n";
-        getGame().postExit();
     }
 };
 

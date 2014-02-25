@@ -7,6 +7,7 @@
 namespace pacman {
 class Texture {
   public:
+    Texture();
     Texture(const array_view<uint8_t>& raw /* rgba8888 */, uint16_t wdth, uint16_t height);
 
     void init(const array_view<uint8_t>& raw /* rgba8888 */, uint16_t wdth, uint16_t height);
