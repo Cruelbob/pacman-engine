@@ -21,15 +21,19 @@ class DummyGameScene: public GameScene {
         switch (status) {
           case LoadingStatus::SUCCESS:
           {
-            std::string content(fileData.begin(), fileData.end());
-            std::cout << "Content of " << filename << ":\"" << content << "\"\n";
+            std::cout << "Content of " << filename << ": \"";
+            std::cout.write((char*)fileData.data(), fileData.size()) << "\"\n";
             std::cout << "postExit from DummyGameScene\n";
             getGame().postExit();
             break;
           }
           case LoadingStatus::FAILURE:
             std::cout << "Loading of " << filename << " failed\n";
-            getFileManager().loadFile(TEST_FILE, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
+            if(filename == TEST_FILE_1) {
+                getFileManager().loadFile(TEST_FILE, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
+            } else {
+                getGame().postExit();
+            }
             break;
           case LoadingStatus::CANCELED:
             std::cout << "Loading of " << filename << " canceled\n";
