@@ -6,6 +6,7 @@
 #include <pacman/Game.h>
 
 using namespace pacman;
+using namespace pacman::FileIO;
 using namespace std::placeholders;
 
 const std::string TEST_FILE = "test.txt";
@@ -16,9 +17,9 @@ class DummyGameScene: public GameScene {
         getGame().getGlobalFileManager().loadFile(TEST_FILE, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
     }
 
-    void onFile(const std::string& filename, FileIO::LoadingStatus status, const array_view<uint8_t>& fileData) {
+    void onFile(const std::string& filename, LoadingStatus status, const array_view<uint8_t>& fileData) {
         switch (status) {
-          case FileIO::LoadingStatus::SUCCESS:
+          case LoadingStatus::SUCCESS:
           {
             std::string content(fileData.begin(), fileData.end());
             std::cout << "Content of " << filename << ":\"" << content << "\"\n";
@@ -26,11 +27,11 @@ class DummyGameScene: public GameScene {
             getGame().postExit();
             break;
           }
-          case FileIO::LoadingStatus::FAILURE:
+          case LoadingStatus::FAILURE:
             std::cout << "Loading of " << filename << " failed\n";
             getFileManager().loadFile(TEST_FILE, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
             break;
-          case FileIO::LoadingStatus::CANCELED:
+          case LoadingStatus::CANCELED:
             std::cout << "Loading of " << filename << " canceled\n";
             getFileManager().loadFile(TEST_FILE_1, std::bind(&DummyGameScene::onFile, this, _1, _2, _3));
             break;
