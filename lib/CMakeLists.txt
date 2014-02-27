@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 
-#if(UNIX)
-#    find_package(OpenGL REQUIRED)
-#    if(NOT OPENGL_FOUND)
-#        message(SEND_ERROR "Failed to find OpenGL")
-#        return()
-#    endif()
-#endif()
+if(UNIX)
+    find_package(OpenGL REQUIRED)
+    if(NOT OPENGL_FOUND)
+        message(SEND_ERROR "Failed to find OpenGL")
+        return()
+    endif()
+endif()
 
 if(${EMSCRIPTEN}) #check before linux because emscripten mimics linux enviroment
     add_definitions(-DSDL=1)
