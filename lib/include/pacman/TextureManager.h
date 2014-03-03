@@ -8,6 +8,7 @@
 namespace pacman {
 class GameScene;
 class Texture;
+namespace Graphics {
 class TextureManager {
   public:
     TextureManager(GameScene& gameScene): gameScene_(gameScene) {}
@@ -21,6 +22,7 @@ class TextureManager {
     GameScene& gameScene_;
     PreloadedTextures preloadedTextures_;
 };
+} // namespace Graphics
 } // namespace pacman
 
 #endif // TEXTUREMANAGER_H

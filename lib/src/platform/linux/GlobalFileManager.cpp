@@ -9,7 +9,7 @@
 #include "pacman/GlobalFileManager.h"
 
 using namespace pacman;
-using namespace FileIO;
+using namespace pacman::FileIO;
 
 void GlobalFileManager::update()
 {
@@ -22,7 +22,7 @@ void GlobalFileManager::update()
     }
 }
 
-ScopedCallbackConnection GlobalFileManager::loadFile(const std::string &filename, const LoadingCallback &callback) {
+ScopedCallbackConnection GlobalFileManager::loadFile(const std::string &filename, const OnFileCallback &callback) {
     auto filePtr = std::make_shared<LoadingFile>();
     if(!filePtr->init(filename, callback)) {
         return ScopedCallbackConnection();
@@ -42,7 +42,7 @@ GlobalFileManager::LoadingFile::~LoadingFile() {
     while(update());
 }
 
-bool GlobalFileManager::LoadingFile::init(const std::string& filename, const LoadingCallback& callback) {
+bool GlobalFileManager::LoadingFile::init(const std::string& filename, const OnFileCallback& callback) {
     int fd = open(filename.c_str(), O_RDONLY, 0);
     if (fd == -1) {
         callback(filename, LoadingStatus::FAILURE, array_view<uint8_t>());

@@ -25,7 +25,7 @@ class GameScene {
   private:
     Game* game_;
     FileIO::FileManager fileManager_;
-    TextureManager textureManager_;
+    Graphics::TextureManager textureManager_;
     InputManager inputManager_;
     bool isReady_;
 };

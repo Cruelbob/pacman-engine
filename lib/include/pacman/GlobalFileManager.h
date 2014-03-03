@@ -26,7 +26,7 @@ enum class LoadingStatus {
 
 typedef std::function<void (const std::string& /* filename */,
                             LoadingStatus /* status */,
-                            const array_view<uint8_t>&) /* fileData */> LoadingCallback;
+                            const array_view<uint8_t>&) /* fileData */> OnFileCallback;
 
 class GlobalFileManager {
   public:
@@ -37,26 +37,21 @@ class GlobalFileManager {
     void update();
 #endif
 
-    ScopedCallbackConnection loadFile(const std::string& filename, const LoadingCallback& loadingCallback);
+    ScopedCallbackConnection loadFile(const std::string& filename, const OnFileCallback& callback);
   private:
     class LoadingFile: public std::enable_shared_from_this<LoadingFile> {
       public:
-        LoadingFile()
-#if UNIX
-          : aiocb_(nullptr)
-#endif
-        {}
-
+        LoadingFile() = default;
         ~LoadingFile();
 
-        bool init(const std::string& filename, const LoadingCallback& callback);
+        bool init(const std::string& filename, const OnFileCallback& callback);
         void cancel();
 #if UNIX
         bool update();
 #endif
       private:
         std::string filename_;
-        LoadingCallback callback_;
+        OnFileCallback callback_;
 
 #if UNIX
         std::shared_ptr<aiocb> aiocb_;

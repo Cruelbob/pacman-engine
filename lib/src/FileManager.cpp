@@ -4,10 +4,10 @@
 #include "pacman/Game.h"
 
 using namespace pacman;
-using namespace FileIO;
+using namespace pacman::FileIO;
 
-void FileManager::loadFile(const std::string &filename, const LoadingCallback &loadingCallback) {
-    auto localInfoIt = loadingFiles_.emplace(loadingFiles_.end(), loadingCallback);
+void FileManager::loadFile(const std::string &filename, const OnFileCallback &callback) {
+    auto localInfoIt = loadingFiles_.emplace(loadingFiles_.end(), callback);
     auto localCallback =
     [this,localInfoIt](const std::string& filename, LoadingStatus status, const array_view<uint8_t>& buffer) {
         localInfoIt->getCallback()(filename, status, buffer);

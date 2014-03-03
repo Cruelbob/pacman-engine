@@ -4,25 +4,33 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <functional>
 
-#include "FileManager.h"
+#include "CallbackConnection.h"
 
 namespace pacman {
 class Game;
 class Texture;
+namespace Graphics {
 class GlobalTextureManager {
   public:
     GlobalTextureManager(Game& game): game_(game) {}
 
     std::shared_ptr<Texture> getTexture(const std::string& name);
   private:
-    typedef std::unordered_map<std::string, std::weak_ptr<Texture>> Textures;
-    typedef std::unordered_map<std::string, CallbackConnection> Callbacks;
-
     Game& game_;
+
+    typedef std::unordered_map<std::string, std::weak_ptr<Texture>> Textures;
     Textures textures_;
-    Callbacks callbacks;
+
+#if EMSCRIPTEN
+#else
+    typedef std::unordered_map<std::string, ScopedCallbackConnection> LoadingCallbacks;
+
+    LoadingCallbacks loadingCallbacks_;
+#endif
 };
+} // Graphics
 } // namespace pacman
 
 #endif // GLOBALTEXTUREMANAGER_H

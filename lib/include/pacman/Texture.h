@@ -2,26 +2,54 @@
 #define TEXTURE_H
 
 #include <cstdint>
+
+#if GL
+#include <GL/gl.h>
+#elif GLES2
+#include <GLES2/gl2.h>
+#endif
+
+
 #include "array_view.h"
 #include "Color.h"
 #include "Geometry.h"
 
 namespace pacman {
+namespace Graphics {
 class Texture {
   public:
-    typedef size2d::size_type size_type;
+    typedef point2d::size_type size_type;
+    Texture()
+#if GL || GLES2
+      : texture_(0)
+#endif
+    {}
+
     Texture(const array_view<Color>& raw /* rgba8888 */, const size2d& size);
-    Texture(const array_view<Color>& raw /* rgba8888 */, size_type wdth, size_type height);
+    Texture(const array_view<Color>& raw /* rgba8888 */, size_type width, size_type height):
+        Texture(raw, size2d(width, height)) {}
 
     void init(const array_view<Color>& raw /* rgba8888 */, const size2d& size);
-    void init(const array_view<Color>& raw /* rgba8888 */, size_type wdth, size_type height);
+    void init(const array_view<Color>& raw /* rgba8888 */, size_type width, size_type height) {
+        init(raw, size2d(width, height));
+    }
 
-    size_type getWidth() const { return width_; }
-    size_type getHeight() const { return height_; }
+    bool isInitialized() const {
+#if GL || GLES2
+        return texture_ != 0;
+#endif
+    }
+
+    size2d getSize() const { return size_; }
+    size_type getWidth() const { return size_.getWidth(); }
+    size_type getHeight() const { return size_.getHeight(); }
   private:
-    size_type width_;
-    size_type height_;
+    size2d size_;
+#if GL || GLES2
+    GLuint texture_;
+#endif
 };
+} // namespace Graphics
 } // namespace pacman
 
 #endif // TEXTURE_H

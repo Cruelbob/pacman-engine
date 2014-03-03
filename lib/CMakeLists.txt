@@ -1,13 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-if(UNIX)
-    find_package(OpenGL REQUIRED)
-    if(NOT OPENGL_FOUND)
-        message(SEND_ERROR "Failed to find OpenGL")
-        return()
-    endif()
-endif()
-
 if(${EMSCRIPTEN}) #check before linux because emscripten mimics linux enviroment
     add_definitions(-DSDL=1)
     add_definitions(-DGLES2=1)
@@ -44,6 +36,7 @@ if(${EMSCRIPTEN}) #check before linux because emscripten mimics linux enviroment
     file(GLOB_RECURSE SOURCE_LIB_EMSCRIPTEN
         src/platform/emscripten/*.cpp
         src/platform/sdl/*.cpp
+        src/platform/opengl/*.cpp
         include/platform/emscripten/pacman/*.h
     )
     set(SOURCE_LIB ${SOURCE_LIB} ${SOURCE_LIB_EMSCRIPTEN})
@@ -54,7 +47,8 @@ if(${EMSCRIPTEN}) #check before linux because emscripten mimics linux enviroment
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     file(GLOB_RECURSE SOURCE_LIB_LINUX
         src/platform/linux/*.cpp
-        src/platform/sdl2/*.cpp
+        src/platform/sdl/*.cpp
+        src/platform/opengl/*.cpp
         include/platform/linux/pacman/*.h
     )
     set(SOURCE_LIB ${SOURCE_LIB} ${SOURCE_LIB_LINUX})

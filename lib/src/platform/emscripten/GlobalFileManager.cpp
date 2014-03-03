@@ -2,12 +2,12 @@
 #include "pacman/GlobalFileManager.h"
 
 using namespace pacman;
-using namespace FileIO;
+using namespace pacman::FileIO;
 
 typedef void (*OnLoad)(void*,void*,int);
 typedef void (*OnError)(void*);
 
-ScopedCallbackConnection GlobalFileManager::loadFile(const std::string &filename, const LoadingCallback &loading)
+ScopedCallbackConnection GlobalFileManager::loadFile(const std::string &filename, const OnFileCallback &loading)
 {
     auto file = std::make_shared<LoadingFile>();
     if(!file->init(filename, loading)) {
@@ -45,7 +45,7 @@ GlobalFileManager::LoadingFile::~LoadingFile() {
     cancel();
 }
 
-bool GlobalFileManager::LoadingFile::init(const std::string &filename, const LoadingCallback &callback) {
+bool GlobalFileManager::LoadingFile::init(const std::string &filename, const OnFileCallback &callback) {
     filename_ = filename;
     callback_ = callback;
 

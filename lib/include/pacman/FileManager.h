@@ -14,25 +14,25 @@ class FileManager {
   public:
     FileManager(GameScene& gameScene): gameScene_(gameScene) {}
 
-    void loadFile(const std::string& filename, const LoadingCallback& loadingCallback);
+    void loadFile(const std::string& filename, const OnFileCallback& callback);
   private:
-    class LoadingFileInfo {
+    class LoadingInfo {
       public:
-        LoadingFileInfo(const LoadingCallback& callback): callback_(callback) {}
+        LoadingInfo(const OnFileCallback& callback): callback_(callback) {}
 
-        const LoadingCallback& getCallback() const { return callback_; }
+        const OnFileCallback& getCallback() const { return callback_; }
         void setCallbackConnection(ScopedCallbackConnection&& callbackConnection) {
             callbackConnection_ = std::move(callbackConnection);
         }
       private:
-        LoadingCallback callback_;
+        OnFileCallback callback_;
         ScopedCallbackConnection callbackConnection_;
     };
 
-    typedef std::list<LoadingFileInfo> LoadingFiles;
+    typedef std::list<LoadingInfo> LoadingInfoArray;
 
     GameScene& gameScene_;
-    LoadingFiles loadingFiles_;
+    LoadingInfoArray loadingFiles_;
 };
 } // namespace FileIO
 } // namespace pacman

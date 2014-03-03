@@ -21,10 +21,10 @@ class Game {
     void postNextState(std::unique_ptr<GameScene>&& nextScene);
     void postExit();
 
-    GlobalTextureManager& getGlobalTextureManager() { return globalTextureManager_; }
+    Graphics::GlobalTextureManager& getGlobalTextureManager() { return globalTextureManager_; }
     FileIO::GlobalFileManager& getGlobalFileManager() { return globalFileManager_; }
   private:
-    GlobalTextureManager globalTextureManager_;
+    Graphics::GlobalTextureManager globalTextureManager_;
     FileIO::GlobalFileManager globalFileManager_;
     GraphicsContext graphicsContext_;
     TaskQueue taskQueue_;
