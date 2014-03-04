@@ -1,5 +1,7 @@
 #ifdef SDL
 #include <SDL/SDL.h>
+#elif SDL2
+#include <SDL2/SDL.h>
 #endif
 
 #include "pacman/InputManager.h"

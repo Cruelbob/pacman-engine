@@ -25,6 +25,11 @@ class size2d {
 
     size2d(size_type width = 0, size_type height = 0): width_(width), height_(height) {}
 
+    void set(size_type width = 0, size_type height = 0) {
+        width_ = width;
+        height_ = height;
+    }
+
     void setWidth(size_type width) { width_ = width; }
     size_type getWidth() const { return width_; }
     void setHeight(size_type height) { height_ = height; }

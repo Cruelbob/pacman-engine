@@ -10,11 +10,19 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         return()
     endif()
 
+    find_package(PNG REQUIRED)
+    if(NOT PNG_FOUND)
+        message(SEND_ERROR "Failed to find PNG library")
+        return()
+    endif()
+
     set(PACMAN_LIBS
         ${PACMAN_LIBS}
         rt
         SDL2
-        ${OPENGL_LIBRARY})
+        ${OPENGL_LIBRARY}
+        ${PNG_LIBRARIES}
+    )
 
     add_definitions(-DSDL2=1)
     add_definitions(-DGL=1)
@@ -28,7 +36,6 @@ file(GLOB SOURCE_LIB
 
 set(PACMAN_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${OpenGL_INCLUDE_DIR}
 )
 
 
@@ -55,6 +62,8 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(PACMAN_INCLUDE_DIRS
         ${PACMAN_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include/platform/linux
+        ${OpenGL_INCLUDE_DIR}
+        ${PNG_INCLUDE_DIRS}
     )
 endif()
 

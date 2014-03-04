@@ -7,8 +7,8 @@
 
 namespace pacman {
 class GameScene;
-class Texture;
 namespace Graphics {
+class Texture;
 class TextureManager {
   public:
     TextureManager(GameScene& gameScene): gameScene_(gameScene) {}
