@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
 if(${EMSCRIPTEN}) #check before linux because emscripten mimics linux enviroment
-    add_definitions(-DSDL=1)
-    add_definitions(-DGLES2=1)
+    set(SDL 1)
+    set(GLES2 1)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     find_package(OpenGL REQUIRED)
     if(NOT OPENGL_FOUND)
@@ -24,9 +24,12 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         ${PNG_LIBRARIES}
     )
 
-    add_definitions(-DSDL2=1)
-    add_definitions(-DGL=1)
+    set(SDL 2)
+    set(GL 1)
 endif()
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Config.h.in"
+               "${CMAKE_CURRENT_SOURCE_DIR}/include/pacman/Config.h")
 
 file(GLOB SOURCE_LIB
     src/*.cpp

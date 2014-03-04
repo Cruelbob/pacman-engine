@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include "Config.h"
+
 #if GL
 #include <GL/gl.h>
 #elif GLES2

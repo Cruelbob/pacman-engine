@@ -5,20 +5,20 @@
 using namespace pacman;
 
 GraphicsContext::GraphicsContext()
-#if SDL
+#if SDL == 1
     : screen_(nullptr)
-#elif SDL2
+#elif SDL == 2
     : window_(nullptr), glContext_(nullptr)
 #endif
 {
     int res = SDL_Init(SDL_INIT_VIDEO);
     assert(res == 0);
 
-#if SDL
+#if SDL == 1
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
     screen_ = SDL_SetVideoMode( 860, 640, 32, SDL_OPENGL );
     assert(screen_);
-#elif SDL2
+#elif SDL == 2
     window_ = SDL_CreateWindow("",
                               SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED,
@@ -31,9 +31,9 @@ GraphicsContext::GraphicsContext()
 }
 
 GraphicsContext::~GraphicsContext() {
-#if SDL
+#if SDL == 1
     SDL_FreeSurface(screen_);
-#elif SDL2
+#elif SDL == 2
     SDL_GL_DeleteContext(glContext_);
     SDL_DestroyWindow(window_);
 #endif
@@ -42,9 +42,9 @@ GraphicsContext::~GraphicsContext() {
 
 void GraphicsContext::update()
 {
-#if SDL
+#if SDL == 1
     SDL_GL_SwapBuffers();
-#elif SDL2
+#elif SDL == 2
     SDL_GL_SwapWindow(window_);
 #endif
 }

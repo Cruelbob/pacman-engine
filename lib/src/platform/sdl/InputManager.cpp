@@ -1,6 +1,8 @@
-#ifdef SDL
+#include "pacman/Config.h"
+
+#if SDL == 1
 #include <SDL/SDL.h>
-#elif SDL2
+#elif SDL == 2
 #include <SDL2/SDL.h>
 #endif
 
