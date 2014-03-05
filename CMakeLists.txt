@@ -20,9 +20,9 @@ if(${EMSCRIPTEN})
     SET(CMAKE_FIND_LIBRARY_PREFIXES "")
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".bc")
 
-    add_definitions(-DEMSCRIPTEN=1)
+    set(EMSCRIPTEN 1)
 elseif(UNIX)
-    add_definitions(-DUNIX=1)
+    set(UNIX 1)
 endif()
 
 add_subdirectory(lib)
