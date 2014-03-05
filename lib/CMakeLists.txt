@@ -1,24 +1,43 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 if(${EMSCRIPTEN}) #check before linux because emscripten mimics linux enviroment
-    add_definitions(-DSDL=1)
-    add_definitions(-DGLES2=1)
+    set(SDL 1)
+    set(GLES2 1)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    find_package(SDL2 REQUIRED)
+    if(NOT SDL2_FOUND)
+        message(SEND_ERROR "Failed to find OpenGL")
+        return()
+    endif()
+
     find_package(OpenGL REQUIRED)
     if(NOT OPENGL_FOUND)
         message(SEND_ERROR "Failed to find OpenGL")
         return()
     endif()
 
+    find_package(PNG REQUIRED)
+    if(NOT PNG_FOUND)
+        message(SEND_ERROR "Failed to find PNG library")
+        return()
+    endif()
+
     set(PACMAN_LIBS
         ${PACMAN_LIBS}
         rt
-        SDL2
-        ${OPENGL_LIBRARY})
+        ${SDL2_LIBRARY}
+        ${OPENGL_gl_LIBRARY}
+        ${PNG_LIBRARIES}
+    )
 
-    add_definitions(-DSDL2=1)
-    add_definitions(-DGL=1)
+    set(SDL 2)
+    set(GL 1)
 endif()
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Config.h.in"
+               "${CMAKE_CURRENT_SOURCE_DIR}/include/pacman/Config.h")
 
 file(GLOB SOURCE_LIB
     src/*.cpp
@@ -28,7 +47,6 @@ file(GLOB SOURCE_LIB
 
 set(PACMAN_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${OpenGL_INCLUDE_DIR}
 )
 
 
@@ -55,6 +73,9 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(PACMAN_INCLUDE_DIRS
         ${PACMAN_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include/platform/linux
+        ${SDL2_INCLUDE_DIR}
+        ${OPENGL_INCLUDE_DIR}
+        ${PNG_INCLUDE_DIRS}
     )
 endif()
 

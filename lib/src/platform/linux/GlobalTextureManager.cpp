@@ -3,6 +3,8 @@
 #include <functional>
 #include <cassert>
 
+#include <png.h>
+
 #include "pacman/GlobalTextureManager.h"
 #include "pacman/Texture.h"
 #include "pacman/Game.h"
@@ -12,30 +14,59 @@ using namespace pacman;
 using namespace pacman::Graphics;
 using namespace pacman::FileIO;
 
-bool decode_png(const array_view<uint8_t>& encoded,
-                std::vector<uint8_t>& decodedOut,
-                uint16_t& widthOut,
-                uint16_t& heightOut);
+bool decode_png(const array_view<uint8_t>& encoded, std::vector<Color>& decodedOut, size2d& sizeOut) {
+    png_image image;
+    memset(&image, 0, sizeof(png_image));
+    image.version = PNG_IMAGE_VERSION;
+    if(!png_image_begin_read_from_memory(&image, encoded.data(), encoded.size())) {
+        return false;
+    }
+
+    sizeOut.set(image.width, image.height);
+    decodedOut.resize(sizeOut.getWidth() * sizeOut.getHeight());
+    image.format = PNG_FORMAT_RGBA;
+    if(!png_image_finish_read(&image, nullptr, decodedOut.data(), 0, 0)) {
+        return false;
+    }
+
+    return true;
+}
+
+bool decode_image(const array_view<uint8_t>& encoded, std::vector<Color>& decodedOut, size2d& sizeOut) {
+    if(!png_sig_cmp(encoded.data(), 0, 8)) {
+        return decode_png(encoded, decodedOut, sizeOut);
+    }
+    return false;
+}
 
 std::shared_ptr<Texture> GlobalTextureManager::getTexture(const std::string &name) {
     std::shared_ptr<Texture> texture;
     auto texturIt = textures_.find(name);
     if(texturIt != textures_.end()) {
-        texture = texturIt->lock();
+        texture = texturIt->second.lock();
     } else {
-        texture = std::make_shared<Texture>();
-        auto infoIt = game_.getGlobalFileManager().loadFile(name,
+        texture.reset(new Texture(), [this, name](Texture* texture) {
+            textures_.erase(name);
+            loadingCallbacks_.erase(name);
+        });
+        textures_.emplace(name, texture);
+        auto connection = game_.getGlobalFileManager().loadFile(name,
         [this](const std::string& filename, LoadingStatus status, const array_view<uint8_t>& fileData) {
             loadingCallbacks_.erase(filename);
-            assert(status != FileIO::LoadingStatus::FAILURE);
-
-//            std::vector<uint8_t> decoded;
-//            uint16_t width = 0, height = 0;
-//            assert(decode_png(fileData, decoded, width, height));
-//            auto textureWeakIt = textures_.find(filename);
-//            auto texture = textureWeakIt->second.lock();
-//            texture->init(decoded, width, height);
+            assert(status != LoadingStatus::FAILURE);
+            auto textureIt = textures_.find(filename);
+            if(status == LoadingStatus::SUCCESS) {
+                std::vector<Color> decodedImage;
+                size2d imageSize;
+                bool isDecoded = decode_image(fileData, decodedImage, imageSize);
+                assert(isDecoded);
+                std::shared_ptr<Texture> texture = textureIt->second.lock();
+                if(texture) {
+                    texture->init(decodedImage, imageSize);
+                }
+            }
         });
+        loadingCallbacks_.emplace(name, std::move(connection));
     }
 
     return texture;

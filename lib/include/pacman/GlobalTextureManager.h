@@ -10,8 +10,8 @@
 
 namespace pacman {
 class Game;
-class Texture;
 namespace Graphics {
+class Texture;
 class GlobalTextureManager {
   public:
     GlobalTextureManager(Game& game): game_(game) {}

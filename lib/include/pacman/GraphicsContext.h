@@ -1,10 +1,12 @@
 #ifndef GRAPHICSCONTEXT_H
 #define GRAPHICSCONTEXT_H
 
-#if SDL2
-#include <SDL2/SDL.h>
-#elif SDL
+#include "Config.h"
+
+#if SDL == 1
 #include <SDL/SDL.h>
+#elif SDL == 2
+#include <SDL2/SDL.h>
 #endif
 
 namespace pacman {
@@ -15,11 +17,11 @@ class GraphicsContext {
 
     void update();
   private:
-#if SDL2
+#if SDL == 1
+    SDL_Surface* screen_;
+#elif SDL == 2
     SDL_Window* window_;
     SDL_GLContext glContext_;
-#elif SDL
-    SDL_Surface* screen_;
 #endif
 };
 } // namespace pacman
