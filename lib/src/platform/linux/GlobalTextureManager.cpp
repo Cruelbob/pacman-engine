@@ -45,7 +45,10 @@ std::shared_ptr<Texture> GlobalTextureManager::getTexture(const std::string &nam
     if(texturIt != textures_.end()) {
         texture = texturIt->second.lock();
     } else {
-        texture = std::make_shared<Texture>();
+        texture.reset(new Texture(), [this, name](Texture* texture) {
+            textures_.erase(name);
+            loadingCallbacks_.erase(name);
+        });
         textures_.emplace(name, texture);
         auto connection = game_.getGlobalFileManager().loadFile(name,
         [this](const std::string& filename, LoadingStatus status, const array_view<uint8_t>& fileData) {
@@ -61,8 +64,6 @@ std::shared_ptr<Texture> GlobalTextureManager::getTexture(const std::string &nam
                 if(texture) {
                     texture->init(decodedImage, imageSize);
                 }
-            } else if(status == LoadingStatus::CANCELED) {
-                textures_.erase(textureIt);
             }
         });
         loadingCallbacks_.emplace(name, std::move(connection));
