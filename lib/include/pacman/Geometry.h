@@ -8,12 +8,12 @@ class point2d {
   public:
     typedef float size_type;
 
-     point2d(size_type x = 0, size_type y = 0): x_(x), y_(y) {}
+    point2d(size_type x = 0, size_type y = 0): x_(x), y_(y) {}
 
-     void setX(size_type x) { x_ = x; }
-     size_type getX() const { return x_; }
-     void setY(size_type y) { y_ = y; }
-     size_type getY() const { return y_; }
+    void setX(size_type x) { x_ = x; }
+    size_type getX() const { return x_; }
+    void setY(size_type y) { y_ = y; }
+    size_type getY() const { return y_; }
   private:
     size_type x_;
     size_type y_;
