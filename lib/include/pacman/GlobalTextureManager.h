@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <functional>
 
+#include "Config.h"
 #include "CallbackConnection.h"
 
 namespace pacman {
@@ -14,21 +15,22 @@ namespace Graphics {
 class Texture;
 class GlobalTextureManager {
   public:
-    GlobalTextureManager(Game& game): game_(game) {}
+    GlobalTextureManager(Game& game)
+#if !EMSCRIPTEN
+        : game_(game)
+#endif
+    {}
 
     std::shared_ptr<Texture> getTexture(const std::string& name);
   private:
+#if !EMSCRIPTEN
     Game& game_;
-
-    typedef std::unordered_map<std::string, std::weak_ptr<Texture>> Textures;
-    Textures textures_;
-
-#if EMSCRIPTEN
-#else
     typedef std::unordered_map<std::string, ScopedCallbackConnection> LoadingCallbacks;
 
     LoadingCallbacks loadingCallbacks_;
 #endif
+    typedef std::unordered_map<std::string, std::weak_ptr<Texture>> Textures;
+    Textures textures_;
 };
 } // Graphics
 } // namespace pacman

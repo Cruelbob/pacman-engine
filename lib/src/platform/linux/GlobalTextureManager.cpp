@@ -48,6 +48,7 @@ std::shared_ptr<Texture> GlobalTextureManager::getTexture(const std::string &nam
         texture.reset(new Texture(), [this, name](Texture* texture) {
             textures_.erase(name);
             loadingCallbacks_.erase(name);
+            delete texture;
         });
         textures_.emplace(name, texture);
         auto connection = game_.getGlobalFileManager().loadFile(name,

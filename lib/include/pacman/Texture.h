@@ -27,10 +27,15 @@ class Texture {
 #endif
     {}
 
+    ~Texture() { clear(); }
+
     Texture(const array_view<Color>& raw /* rgba8888 */, const size2d& size);
     Texture(const array_view<Color>& raw /* rgba8888 */, size_type width, size_type height):
         Texture(raw, size2d(width, height)) {}
 
+#if EMSCRIPTEN
+    void init(GLuint texture, const size2d& size);
+#endif
     void init(const array_view<Color>& raw /* rgba8888 */, const size2d& size);
     void init(const array_view<Color>& raw /* rgba8888 */, size_type width, size_type height) {
         init(raw, size2d(width, height));
@@ -45,6 +50,8 @@ class Texture {
     size2d getSize() const { return size_; }
     size_type getWidth() const { return size_.getWidth(); }
     size_type getHeight() const { return size_.getHeight(); }
+
+    void clear();
   private:
     size2d size_;
 #if GL || GLES2

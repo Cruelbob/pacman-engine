@@ -21,6 +21,7 @@ if(${EMSCRIPTEN})
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".bc")
 
     set(EMSCRIPTEN 1)
+    set(UNIX)
 elseif(UNIX)
     set(UNIX 1)
 endif()

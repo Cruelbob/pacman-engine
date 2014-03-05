@@ -20,7 +20,21 @@ GLuint makeTexture(const array_view<Color> &raw, const size2d &size) {
 Texture::Texture(const array_view<Color> &raw, const size2d &size):
     size_(size), texture_(makeTexture(raw, size)) {}
 
+void Texture::init(GLuint texture, const size2d &size) {
+    clear();
+    texture_ = texture;
+    size_ = size;
+}
+
 void Texture::init(const array_view<Color> &raw, const size2d &size) {
+    clear();
     size_ = size;
     texture_ = makeTexture(raw, size);
+}
+
+void Texture::clear() {
+    if(texture_) {
+        glDeleteTextures(1, &texture_);
+        size_.set();
+    }
 }
