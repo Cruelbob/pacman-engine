@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 if(${EMSCRIPTEN}) #check before linux because emscripten mimics linux enviroment
     set(SDL 1)
     set(GLES2 1)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    find_package(SDL2 REQUIRED)
+    if(NOT SDL2_FOUND)
+        message(SEND_ERROR "Failed to find OpenGL")
+        return()
+    endif()
+
     find_package(OpenGL REQUIRED)
     if(NOT OPENGL_FOUND)
         message(SEND_ERROR "Failed to find OpenGL")
@@ -19,8 +27,8 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(PACMAN_LIBS
         ${PACMAN_LIBS}
         rt
-        SDL2
-        ${OPENGL_LIBRARY}
+        ${SDL2_LIBRARY}
+        ${OPENGL_gl_LIBRARY}
         ${PNG_LIBRARIES}
     )
 
@@ -65,7 +73,8 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(PACMAN_INCLUDE_DIRS
         ${PACMAN_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include/platform/linux
-        ${OpenGL_INCLUDE_DIR}
+        ${SDL2_INCLUDE_DIR}
+        ${OPENGL_INCLUDE_DIR}
         ${PNG_INCLUDE_DIRS}
     )
 endif()
