@@ -19,6 +19,8 @@ class DummyGameScene: public GameScene {
 
     void update() override {
         if(texture_->isInitialized()) {
+            std::cout << "texture: " << texture_->getWidth() << "x" << texture_->getHeight() << "\n";
+            std::cout << "postExit from DummyGameScene\n";
             getGame().postExit();
         }
     }
