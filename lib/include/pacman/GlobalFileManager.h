@@ -8,6 +8,8 @@
 #include <string>
 #include <memory>
 
+#include "Config.h"
+
 #if UNIX
 #include <aio.h>
 #include <unistd.h>
