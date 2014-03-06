@@ -13,6 +13,7 @@ GraphicsContext::GraphicsContext()
 {
     int res = SDL_Init(SDL_INIT_VIDEO);
     assert(res == 0);
+    (void)res;
 
 #if SDL == 1
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );

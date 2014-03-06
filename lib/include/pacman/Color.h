@@ -19,6 +19,7 @@ union Color {
       components(red, green, blue, alpha) {}
     Color(float red, float green, float blue, float alpha = 1.0f):
       components(red*255.0f, green*255.0f, blue*255.0f, alpha*255.0f) {}
+    Color(uint32_t uintValue): uintValue(uintValue) {}
 
     void set(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0, uint8_t alpha = 255) {
         components.red = red;
