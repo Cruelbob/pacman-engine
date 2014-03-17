@@ -2,6 +2,7 @@
 #define GEOMETRY_H
 
 #include <cstdint>
+#include <cmath>
 
 namespace pacman {
 class point2d {
@@ -43,8 +44,8 @@ class bounds2d {
   public:
     typedef point2d::size_type size_type;
 
-    bounds2d(size_type left = 0, size_type top = 0, size_type right = 0, size_type bottom = 0):
-        left_(left), top_(top), right_(right), bottom_(bottom) {}
+    bounds2d(size_type left = 0, size_type bottom = 0, size_type right = 0, size_type top = 0):
+        left_(left), bottom_(bottom), right_(right), top_(top) {}
 
     void setLeft(size_type left) { left_ = left; }
     size_type getLeft() const { return left_; }
@@ -55,16 +56,16 @@ class bounds2d {
     void setBottom(size_type bottom) { bottom_ = bottom; }
     size_type getBottom() const { return bottom_; }
 
-    size2d getSize() const { return size2d(right_ - left_, bottom_ - top_); }
-    bool isContains(const point2d& point) {
+    size2d getSize() const { return size2d(right_ - left_, top_ - bottom_); }
+    bool contains(const point2d& point) {
         return  point.getX() >= left_ && point.getX() <= right_ &&
                 point.getY() >= top_ && point.getY() <= bottom_;
     }
   private:
     size_type left_;
-    size_type top_;
-    size_type right_;
     size_type bottom_;
+    size_type right_;
+    size_type top_;
 };
 }
 
