@@ -57,10 +57,17 @@ class bounds2d {
     size_type getBottom() const { return bottom_; }
 
     size2d getSize() const { return size2d(right_ - left_, top_ - bottom_); }
-    bool contains(const point2d& point) {
+    bool contains(const point2d& point) const {
         return  point.getX() >= left_ && point.getX() <= right_ &&
                 point.getY() >= top_ && point.getY() <= bottom_;
     }
+    bounds2d getAbsoluteBounds(const bounds2d& relative) const {
+        return bounds2d(left_ + relative.left_,
+                        bottom_ + relative.bottom_,
+                        right_ + relative.right_,
+                        top_ + relative.top_);
+    }
+
   private:
     size_type left_;
     size_type bottom_;
