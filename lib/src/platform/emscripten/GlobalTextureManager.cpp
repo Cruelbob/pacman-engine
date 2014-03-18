@@ -44,7 +44,7 @@ std::shared_ptr<Texture> GlobalTextureManager::getTexture(const std::string &nam
                 Runtime.dynCall('viiii', $3, [$1, textureId, img.width, img.height]);
             };
 
-            img.onlrror = function() {
+            img.onerror = function() {
                 console.log('Error loading ' + img.src);
             };
             img.src = Pointer_stringify($0);
