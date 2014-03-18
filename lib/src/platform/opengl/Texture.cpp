@@ -20,11 +20,13 @@ GLuint makeTexture(const array_view<Color> &raw, const size2d &size) {
 Texture::Texture(const array_view<Color> &raw, const size2d &size):
     size_(size), texture_(makeTexture(raw, size)) {}
 
+#if EMSCRIPTEN
 void Texture::init(GLuint texture, const size2d &size) {
     clear();
     texture_ = texture;
     size_ = size;
 }
+#endif
 
 void Texture::init(const array_view<Color> &raw, const size2d &size) {
     clear();
