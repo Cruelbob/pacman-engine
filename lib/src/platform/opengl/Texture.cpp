@@ -37,6 +37,7 @@ void Texture::init(const array_view<Color> &raw, const size2d &size) {
 void Texture::clear() {
     if(isInitialized()) {
         glDeleteTextures(1, &texture_);
+        texture_ = 0;
         size_.set();
     }
 }
