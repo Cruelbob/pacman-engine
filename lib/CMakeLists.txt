@@ -45,6 +45,12 @@ file(GLOB SOURCE_LIB
     include/pacman/*.h
 )
 
+file(GLOB_RECURSE EIGEN_SOURCE
+    include/Eigen/*
+)
+
+set(SOURCE_LIB ${SOURCE_LIB} ${EIGEN_SOURCE})
+
 set(PACMAN_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
