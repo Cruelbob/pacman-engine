@@ -15,5 +15,8 @@ void FileManager::loadFile(const std::string &filename, const OnFileCallback &ca
             loadingFiles_.erase(localInfoIt);
         }
     };
-    localInfoIt->setCallbackConnection(gameScene_.getGame().getGlobalFileManager().loadFile(filename, localCallback));
+    ScopedCallbackConnection connection = gameScene_.getGame().getGlobalFileManager().loadFile(filename, localCallback);
+    if(connection.connected()) {
+        localInfoIt->setCallbackConnection(std::move(connection));
+    }
 }

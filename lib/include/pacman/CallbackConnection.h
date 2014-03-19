@@ -31,6 +31,9 @@ class CallbackConnection {
             disconnectCallback_ = nullptr;
         }
     }
+    bool connected() const {
+        return disconnectCallback_ != nullptr;
+    }
   private:
     DisconnectCallback disconnectCallback_;
 };
@@ -52,6 +55,9 @@ class ScopedCallbackConnection {
     ScopedCallbackConnection& operator=(ScopedCallbackConnection&&) = default;
 
     void disconnect() { callbackConnection_.disconnect(); }
+    bool connected() const {
+        return callbackConnection_.connected();
+    }
   private:
     CallbackConnection callbackConnection_;
 };
