@@ -8,6 +8,8 @@ namespace Graphics {
 class Sprite {
   public:
     Sprite() {}
+    Sprite(const std::shared_ptr<Texture>& texture):
+        texture_(texture), textureBounds_(0,0,texture->getWidth(),texture->getHeight()) {}
     Sprite(const std::shared_ptr<Texture>& texture, const bounds2d& bounds):
         texture_(texture), textureBounds_(bounds) {}
     Sprite(const Sprite& otherSprite, const bounds2d& bounds):
