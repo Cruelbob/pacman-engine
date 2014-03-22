@@ -2,12 +2,16 @@
 #define SPRITE_H
 
 #include "Texture.h"
+#include "Node.h"
 
 namespace pacman {
 namespace Graphics {
-class Sprite {
+class Sprite: public Node {
   public:
     Sprite() {}
+    Sprite(const std::shared_ptr<Texture>& texture):
+        texture_(texture),
+        textureBounds_(0, 0, texture->getWidth(), texture->getHeight()) {}
     Sprite(const std::shared_ptr<Texture>& texture, const bounds2d& bounds):
         texture_(texture), textureBounds_(bounds) {}
     Sprite(const Sprite& otherSprite, const bounds2d& bounds):
@@ -15,7 +19,7 @@ class Sprite {
         textureBounds_(otherSprite.textureBounds_.getAbsoluteBounds(bounds)) {}
 
     bool isInitialized() const {
-        return texture_ != nullptr;
+        return texture_ != nullptr && texture_->isInitialized();
     }
   private:
     std::shared_ptr<Texture> texture_;
