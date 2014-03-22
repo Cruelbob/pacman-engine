@@ -2,12 +2,18 @@
 #define COLOR_H
 
 #include <cstdint>
+#include <ostream>
 
 namespace pacman {
 union Color {
     struct Components {
         Components(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha):
           red(red), green(green), blue(blue), alpha(alpha) {}
+
+        float redAsFloat() const { return static_cast<float>(red)/255.0f; }
+        float greenAsFloat() const { return static_cast<float>(green)/255.0f; }
+        float blueAsFloat() const { return static_cast<float>(blue)/255.0f; }
+        float alphaAsFloat() const { return static_cast<float>(alpha)/255.0f; }
 
         uint8_t red;
         uint8_t green;
@@ -36,6 +42,16 @@ union Color {
     Components components;
     uint32_t uintValue;
 };
+
+inline std::ostream& operator<<(std::ostream& out, const Color& color)
+{
+    out << "r: " << std::hex << static_cast<int>(color.components.red)
+        << " g: " << std::hex << static_cast<int>(color.components.green)
+        << " b: " << std::hex << static_cast<int>(color.components.blue)
+        << " a: " << std::hex << static_cast<int>(color.components.alpha);
+    return out;
+}
+
 } // namespace pacman
 
 #endif // COLOR_H
