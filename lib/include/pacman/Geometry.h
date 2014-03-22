@@ -9,6 +9,8 @@ class point2d {
   public:
     typedef float size_type;
 
+    point2d(const point2d& other) = default;
+    point2d& operator=(const point2d& other) = default;
     point2d(size_type x = 0, size_type y = 0): x_(x), y_(y) {}
 
     void setX(size_type x) { x_ = x; }
@@ -22,8 +24,10 @@ class point2d {
 
 class size2d {
   public:
-    typedef point2d::size_type size_type;
+    typedef float size_type;
 
+    size2d(const size2d& other) = default;
+    size2d& operator=(const size2d& other) = default;
     size2d(size_type width = 0, size_type height = 0): width_(width), height_(height) {}
 
     void set(size_type width = 0, size_type height = 0) {
@@ -42,8 +46,10 @@ class size2d {
 
 class bounds2d {
   public:
-    typedef point2d::size_type size_type;
+    typedef float size_type;
 
+    bounds2d(const bounds2d& other) = default;
+    bounds2d& operator=(const bounds2d& other) = default;
     bounds2d(size_type left = 0, size_type bottom = 0, size_type right = 0, size_type top = 0):
         left_(left), bottom_(bottom), right_(right), top_(top) {}
 
@@ -56,11 +62,27 @@ class bounds2d {
     void setBottom(size_type bottom) { bottom_ = bottom; }
     size_type getBottom() const { return bottom_; }
 
+    point2d getPosition() const {
+        return point2d(left_, bottom_);
+    }
+    void setPosition(const point2d& position) {
+        right_ = right_ - left_ + position.getX();
+        top_ = top_ - bottom_ + position.getY();
+        left_ = position.getX();
+        bottom_ = position.getY();
+    }
+
     size2d getSize() const { return size2d(right_ - left_, top_ - bottom_); }
+    void setSize(const size2d& size) {
+        right_ = left_ + size.getWidth();
+        top_ = bottom_ + size.getHeight();
+    }
+
     bool contains(const point2d& point) const {
         return  point.getX() >= left_ && point.getX() <= right_ &&
                 point.getY() >= top_ && point.getY() <= bottom_;
     }
+
     bounds2d getAbsoluteBounds(const bounds2d& relative) const {
         return bounds2d(left_ + relative.left_,
                         bottom_ + relative.bottom_,
