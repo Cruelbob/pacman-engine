@@ -28,9 +28,6 @@ union Color {
         components.alpha = alpha;
     }
 
-    uint32_t asUint() const { return uintValue; }
-    void set(uint32_t uintValue) { this->uintValue = uintValue; }
-
     float redAsFloat() const { return static_cast<float>(components.red)/255.0f; }
     float greenAsFloat() const { return static_cast<float>(components.green)/255.0f; }
     float blueAsFloat() const { return static_cast<float>(components.blue)/255.0f; }
