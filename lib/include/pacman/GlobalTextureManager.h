@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <functional>
 
-#include "Config.h"
+#include "pacman/Config.h"
 #include "CallbackConnection.h"
 
 namespace pacman {

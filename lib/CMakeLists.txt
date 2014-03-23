@@ -37,12 +37,13 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Config.h.in"
-               "${CMAKE_CURRENT_SOURCE_DIR}/include/pacman/Config.h")
+               "${CMAKE_CURRENT_BINARY_DIR}/include/pacman/Config.h")
 
 file(GLOB SOURCE_LIB
     src/*.cpp
     include/*.h
     include/pacman/*.h
+    ${CMAKE_CURRENT_BINARY_DIR}/include/pacman/*.h
 )
 
 file(GLOB_RECURSE EIGEN_SOURCE
@@ -53,6 +54,7 @@ set(SOURCE_LIB ${SOURCE_LIB} ${EIGEN_SOURCE})
 
 set(PACMAN_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
 

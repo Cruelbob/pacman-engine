@@ -1,7 +1,7 @@
 #ifndef GRAPHICSCONTEXT_H
 #define GRAPHICSCONTEXT_H
 
-#include "Config.h"
+#include "pacman/Config.h"
 
 #if SDL == 1
 #include <SDL/SDL.h>

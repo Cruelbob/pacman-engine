@@ -8,7 +8,7 @@
 #include <string>
 #include <memory>
 
-#include "Config.h"
+#include "pacman/Config.h"
 
 #if UNIX
 #include <aio.h>

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "Config.h"
+#include "pacman/Config.h"
 
 #if GL
 #include <GL/gl.h>
