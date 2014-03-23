@@ -10,13 +10,11 @@ class Sprite: public Node {
   public:
     Sprite() {}
     Sprite(const std::shared_ptr<Texture>& texture):
-        texture_(texture),
-        textureBounds_(0, 0, texture->getWidth(), texture->getHeight()) {}
+        texture_(texture), textureBounds_(0, 0, texture->getWidth(), texture->getHeight()) {}
     Sprite(const std::shared_ptr<Texture>& texture, const bounds2d& bounds):
         texture_(texture), textureBounds_(bounds) {}
-    Sprite(const Sprite& otherSprite, const bounds2d& bounds):
-        texture_(otherSprite.texture_),
-        textureBounds_(otherSprite.textureBounds_.getAbsoluteBounds(bounds)) {}
+    Sprite(const Sprite& other, const bounds2d& bounds):
+        texture_(other.texture_), textureBounds_(other.textureBounds_.getAbsoluteBounds(bounds)) {}
 
     bool isInitialized() const {
         return texture_ != nullptr && texture_->isInitialized();
