@@ -5,6 +5,7 @@
 #include <pacman/GameScene.h>
 #include <pacman/Game.h>
 #include <pacman/Texture.h>
+#include <pacman/Sprite.h>
 
 using namespace pacman;
 using namespace pacman::Graphics;
@@ -12,17 +13,16 @@ using namespace pacman::Graphics;
 const std::string IMAGE_FILE = "bender.png";
 
 class DummyGameScene: public GameScene {
-    std::shared_ptr<Texture> texture_;
-    void initialize() override {
-        texture_ = getGame().getGlobalTextureManager().getTexture(IMAGE_FILE);
-    }
+    ScopedCallbackConnection keyCallback_;
 
-    void update(pacman::Time deltaTime) override {
-        if(texture_->isInitialized()) {
-            std::cout << "texture: " << texture_->getWidth() << "x" << texture_->getHeight() << "\n";
-            std::cout << "postExit from DummyGameScene\n";
-            getGame().postExit();
-        }
+    void initialize() override {
+        keyCallback_ = getInputManager().addOnKeyEvent([this](const KeyEvent& keyEvent) {
+            if(keyEvent.getType() == KeyEvent::Type::DOWN && keyEvent.getKey() == KeyEvent::Key::ESC) {
+                getGame().postExit();
+            }
+        });
+
+        addChild(std::make_shared<Sprite>(getGame().getGlobalTextureManager().getTexture(IMAGE_FILE)));
     }
 };
 

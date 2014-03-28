@@ -62,7 +62,7 @@ std::shared_ptr<Texture> GlobalTextureManager::getTexture(const std::string &nam
                 bool isDecoded = decode_image(fileData, decodedImage, imageSize);
                 assert(isDecoded);
                 std::shared_ptr<Texture> texture = textureIt->second.lock();
-                if(texture) {
+                if(texture && !texture->isInitialized()) {
                     texture->init(decodedImage, imageSize);
                 }
             }

@@ -4,10 +4,11 @@
 #include "FileManager.h"
 #include "InputManager.h"
 #include "TextureManager.h"
+#include "Node.h"
 
 namespace pacman {
 class Game;
-class GameScene {
+class GameScene: public Graphics::Node {
   public:
     GameScene(): game_(nullptr), fileManager_(*this) , textureManager_(*this), isReady_(false) {}
     virtual ~GameScene() {}
@@ -15,7 +16,6 @@ class GameScene {
     void setGame(Game* game) { game_ = game; }
     bool isReady() const { return isReady_; }
     virtual void initialize() = 0;
-    virtual void update() {}
 
     FileIO::FileManager& getFileManager() { return fileManager_; }
     InputManager& getInputManager() { return inputManager_; }

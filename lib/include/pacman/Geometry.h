@@ -53,6 +53,13 @@ class bounds2d {
     bounds2d(size_type left = 0, size_type bottom = 0, size_type right = 0, size_type top = 0):
         left_(left), bottom_(bottom), right_(right), top_(top) {}
 
+    void set(size_type left = 0, size_type bottom = 0, size_type right = 0, size_type top = 0) {
+        left_ = left;
+        bottom_ = bottom;
+        right_ = right;
+        top_ = top;
+    }
+
     void setLeft(size_type left) { left_ = left; }
     size_type getLeft() const { return left_; }
     void setTop(size_type top) { top_ = top; }

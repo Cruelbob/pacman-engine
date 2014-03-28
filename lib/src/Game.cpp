@@ -17,7 +17,7 @@ bool Game::loop() {
         globalFileManager_.update();
 #endif
         scene_->getInputManager().update();
-        scene_->update();
+        scene_->visit(Time(0));
         graphicsContext_.update();
         taskQueue_.executeTasks(taskQueue_.getSize());
         return true;

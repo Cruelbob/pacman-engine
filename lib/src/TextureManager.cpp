@@ -2,7 +2,6 @@
 #include "pacman/GameScene.h"
 #include "pacman/Game.h"
 
-using namespace pacman;
 using namespace pacman::Graphics;
 
 std::shared_ptr<Texture> TextureManager::getTexture(const std::string &name) {

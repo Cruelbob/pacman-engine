@@ -3,7 +3,6 @@
 #include "pacman/GameScene.h"
 #include "pacman/Game.h"
 
-using namespace pacman;
 using namespace pacman::FileIO;
 
 void FileManager::loadFile(const std::string &filename, const OnFileCallback &callback) {

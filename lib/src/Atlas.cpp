@@ -3,12 +3,11 @@
 using namespace pacman;
 using namespace pacman::Graphics;
 
-
-Sprite Atlas::getSprite(const std::string &name) const {
+bounds2d Atlas::getSpriteBounds(const std::string &name) const {
     auto regionIt = sprites_.find(name);
     if(regionIt != sprites_.end()) {
-        return Sprite(texture_, regionIt->second);
+        return regionIt->second;
     } else {
-        return Sprite();
+        return bounds2d();
     }
 }

@@ -12,7 +12,7 @@ class Atlas {
   public:
     Atlas();
 
-    Sprite getSprite(const std::string& name) const;
+    bounds2d getSpriteBounds(const std::string& name) const;
   private:
     std::shared_ptr<Texture> texture_;
     std::map<std::string, bounds2d> sprites_;
