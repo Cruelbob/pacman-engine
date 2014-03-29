@@ -1,5 +1,5 @@
-#ifndef GLOBALTEXTUREMANAGER_H
-#define GLOBALTEXTUREMANAGER_H
+#ifndef PACMAN_GLOBALTEXTUREMANAGER_H
+#define PACMAN_GLOBALTEXTUREMANAGER_H
 
 #include <string>
 #include <memory>
@@ -11,7 +11,6 @@
 
 namespace pacman {
 class Game;
-namespace Graphics {
 class Texture;
 class GlobalTextureManager {
   public:
@@ -32,7 +31,6 @@ class GlobalTextureManager {
     typedef std::unordered_map<std::string, std::weak_ptr<Texture>> Textures;
     Textures textures_;
 };
-} // Graphics
 } // namespace pacman
 
-#endif // GLOBALTEXTUREMANAGER_H
+#endif // PACMAN_GLOBALTEXTUREMANAGER_H

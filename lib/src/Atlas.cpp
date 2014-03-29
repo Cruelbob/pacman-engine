@@ -1,13 +1,12 @@
 #include "pacman/Atlas.h"
 
 using namespace pacman;
-using namespace pacman::Graphics;
 
-bounds2d Atlas::getSpriteBounds(const std::string &name) const {
+TextureFrame TextureAtlas::getFrame(const std::string &name) const {
     auto regionIt = sprites_.find(name);
     if(regionIt != sprites_.end()) {
-        return regionIt->second;
+        return TextureFrame(texture_, regionIt->second.bounds, regionIt->second.rotated);
     } else {
-        return bounds2d();
+        return TextureFrame(texture_);
     }
 }

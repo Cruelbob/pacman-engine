@@ -2,12 +2,11 @@
 #include "pacman/GameScene.h"
 #include "pacman/Game.h"
 
-using namespace pacman::Graphics;
+using namespace pacman;
 
 void Sprite::update(pacman::Time deltaTime) {
-    if(texture_ && !boundsInitialized_ && texture_->isInitialized()) {
-        textureBounds_.set(0, 0, texture_->getWidth(), texture_->getHeight());
-        boundsInitialized_ = true;
+    if(isInitialized()) {
+        Node::update(deltaTime);
     }
 }
 

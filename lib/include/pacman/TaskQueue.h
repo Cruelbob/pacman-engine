@@ -1,5 +1,5 @@
-#ifndef TASKQUEUE_H
-#define TASKQUEUE_H
+#ifndef PACMAN_TASKQUEUE_H
+#define PACMAN_TASKQUEUE_H
 
 #include <functional>
 #include <queue>
@@ -18,4 +18,4 @@ class TaskQueue {
 };
 } // namespace pacman
 
-#endif // TASKQUEUE_H
+#endif // PACMAN_TASKQUEUE_H

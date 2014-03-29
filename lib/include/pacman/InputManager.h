@@ -1,5 +1,5 @@
-#ifndef INPUT_MANAGER_H
-#define INPUT_MANAGER_H
+#ifndef PACMAN_INPUT_MANAGER_H
+#define PACMAN_INPUT_MANAGER_H
 
 #include <functional>
 #include <memory>
@@ -44,4 +44,4 @@ class InputManager {
 };
 } // namespace pacman
 
-#endif // INPUT_MANAGER_H
+#endif // PACMAN_INPUT_MANAGER_H

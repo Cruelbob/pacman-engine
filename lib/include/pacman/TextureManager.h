@@ -1,5 +1,5 @@
-#ifndef TEXTUREMANAGER_H
-#define TEXTUREMANAGER_H
+#ifndef PACMAN_TEXTUREMANAGER_H
+#define PACMAN_TEXTUREMANAGER_H
 
 #include <string>
 #include <memory>
@@ -7,7 +7,6 @@
 
 namespace pacman {
 class GameScene;
-namespace Graphics {
 class Texture;
 class TextureManager {
   public:
@@ -22,7 +21,6 @@ class TextureManager {
     GameScene& gameScene_;
     PreloadedTextures preloadedTextures_;
 };
-} // namespace Graphics
 } // namespace pacman
 
-#endif // TEXTUREMANAGER_H
+#endif // PACMAN_TEXTUREMANAGER_H

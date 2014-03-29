@@ -1,5 +1,5 @@
-#ifndef CALLBACK_CONNECTION_H
-#define CALLBACK_CONNECTION_H
+#ifndef PACMAN_CALLBACK_CONNECTION_H
+#define PACMAN_CALLBACK_CONNECTION_H
 
 #include <functional>
 
@@ -64,4 +64,4 @@ class ScopedCallbackConnection {
 } // namespace pacman
 
 
-#endif // CALLBACK_CONNECTION_H
+#endif // PACMAN_CALLBACK_CONNECTION_H

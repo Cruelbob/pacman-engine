@@ -3,7 +3,7 @@
 #include "pacman/GameScene.h"
 #include "pacman/Game.h"
 
-using namespace pacman::FileIO;
+using namespace pacman;
 
 void FileManager::loadFile(const std::string &filename, const OnFileCallback &callback) {
     auto localInfoIt = loadingFiles_.emplace(loadingFiles_.end(), callback);

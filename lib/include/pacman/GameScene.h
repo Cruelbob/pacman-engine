@@ -1,5 +1,5 @@
-#ifndef GAMESCENE_H
-#define GAMESCENE_H
+#ifndef PACMAN_GAMESCENE_H
+#define PACMAN_GAMESCENE_H
 
 #include "FileManager.h"
 #include "InputManager.h"
@@ -8,7 +8,7 @@
 
 namespace pacman {
 class Game;
-class GameScene: public Graphics::Node {
+class GameScene: public Node {
   public:
     GameScene(): game_(nullptr), fileManager_(*this) , textureManager_(*this), isReady_(false) {}
     virtual ~GameScene() {}
@@ -17,18 +17,18 @@ class GameScene: public Graphics::Node {
     bool isReady() const { return isReady_; }
     virtual void initialize() = 0;
 
-    FileIO::FileManager& getFileManager() { return fileManager_; }
+    FileManager& getFileManager() { return fileManager_; }
     InputManager& getInputManager() { return inputManager_; }
     Game& getGame() { return *game_; }
   protected:
     void isReady(bool isReady) { isReady_ = isReady; }
   private:
     Game* game_;
-    FileIO::FileManager fileManager_;
-    Graphics::TextureManager textureManager_;
+    FileManager fileManager_;
+    TextureManager textureManager_;
     InputManager inputManager_;
     bool isReady_;
 };
 } // namespace pacman
 
-#endif // GAMESCENE_H
+#endif // PACMAN_GAMESCENE_H

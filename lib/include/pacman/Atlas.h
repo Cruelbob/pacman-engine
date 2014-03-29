@@ -1,23 +1,26 @@
-#ifndef ATLAS_H
-#define ATLAS_H
+#ifndef PACMAN_ATLAS_H
+#define PACMAN_ATLAS_H
 
 #include <string>
 #include <map>
 
-#include "Sprite.h"
+#include "TextureFrame.h"
 
 namespace pacman {
-namespace Graphics {
-class Atlas {
+class TextureAtlas {
   public:
-    Atlas();
+    TextureAtlas();
 
-    bounds2d getSpriteBounds(const std::string& name) const;
+    TextureFrame getFrame(const std::string& name) const;
   private:
+    struct FrameInfo {
+        bounds2d bounds;
+        bool rotated;
+    };
+
     std::shared_ptr<Texture> texture_;
-    std::map<std::string, bounds2d> sprites_;
+    std::map<std::string, FrameInfo> sprites_;
 };
-} // namespace Graphics
 } // namespace pacman
 
-#endif // ATLAS_H
+#endif // PACMAN_ATLAS_H

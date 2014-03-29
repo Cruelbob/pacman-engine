@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef PACMAN_GAME_H
+#define PACMAN_GAME_H
 
 #include <string>
 #include <memory>
@@ -21,15 +21,15 @@ class Game {
     void postNextState(std::unique_ptr<GameScene>&& nextScene);
     void postExit();
 
-    Graphics::GlobalTextureManager& getGlobalTextureManager() { return globalTextureManager_; }
-    FileIO::GlobalFileManager& getGlobalFileManager() { return globalFileManager_; }
+    GlobalTextureManager& getGlobalTextureManager() { return globalTextureManager_; }
+    GlobalFileManager& getGlobalFileManager() { return globalFileManager_; }
   private:
-    Graphics::GlobalTextureManager globalTextureManager_;
-    FileIO::GlobalFileManager globalFileManager_;
+    GlobalTextureManager globalTextureManager_;
+    GlobalFileManager globalFileManager_;
     GraphicsContext graphicsContext_;
     TaskQueue taskQueue_;
     std::unique_ptr<GameScene> scene_;
 };
 } // namespace pacman
 
-#endif // GAME_H
+#endif // PACMAN_GAME_H

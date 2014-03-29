@@ -1,7 +1,6 @@
 #include "pacman/Texture.h"
 
 using namespace pacman;
-using namespace pacman::Graphics;
 
 GLuint makeTexture(const array_view<Color> &raw, const size2d &size) {
     GLuint texture = 0;
