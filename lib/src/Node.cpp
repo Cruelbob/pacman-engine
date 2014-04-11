@@ -9,6 +9,7 @@ void Node::addChild(const std::shared_ptr<Node> &child) {
 
 void Node::visit(pacman::Time deltaTime) {
     update(deltaTime);
+    assert(!transformIsDirty_);
     draw();
     for(const auto& child : childs_) {
         child->visit(deltaTime);
