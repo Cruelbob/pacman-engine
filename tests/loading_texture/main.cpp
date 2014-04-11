@@ -7,7 +7,6 @@
 #include <pacman/Texture.h>
 
 using namespace pacman;
-using namespace pacman::Graphics;
 
 const std::string IMAGE_FILE = "bender.png";
 

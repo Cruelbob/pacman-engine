@@ -6,7 +6,6 @@
 #include <iostream>
 
 using namespace pacman;
-using namespace pacman::Graphics;
 
 GLuint createAndBindTexture() {
     GLuint texture = 0;

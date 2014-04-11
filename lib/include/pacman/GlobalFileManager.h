@@ -1,5 +1,5 @@
-#ifndef GLOBALFILEMANAGER_H
-#define GLOBALFILEMANAGER_H
+#ifndef PACMAN_GLOBALFILEMANAGER_H
+#define PACMAN_GLOBALFILEMANAGER_H
 
 #include <functional>
 #include <vector>
@@ -19,7 +19,6 @@
 #include "CallbackConnection.h"
 
 namespace pacman {
-namespace FileIO {
 enum class LoadingStatus {
     SUCCESS,
     FAILURE,
@@ -70,7 +69,6 @@ class GlobalFileManager {
     LoadingFiles loadingFiles_;
 #endif
 };
-} // namespace FileIO
 } // namespace pacman
 
-#endif // GLOBALFILEMANAGER_H
+#endif // PACMAN_GLOBALFILEMANAGER_H

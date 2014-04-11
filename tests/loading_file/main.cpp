@@ -6,7 +6,6 @@
 #include <pacman/Game.h>
 
 using namespace pacman;
-using namespace pacman::FileIO;
 using namespace std::placeholders;
 
 const std::string TEST_FILE = "test.txt";

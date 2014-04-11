@@ -1,5 +1,5 @@
-#ifndef FILEMANAGER_H
-#define FILEMANAGER_H
+#ifndef PACMAN_FILEMANAGER_H
+#define PACMAN_FILEMANAGER_H
 
 #include <list>
 #include <memory>
@@ -9,7 +9,6 @@
 
 namespace pacman {
 class GameScene;
-namespace FileIO {
 class FileManager {
   public:
     FileManager(GameScene& gameScene): gameScene_(gameScene) {}
@@ -34,7 +33,6 @@ class FileManager {
     GameScene& gameScene_;
     LoadingInfoArray loadingFiles_;
 };
-} // namespace FileIO
 } // namespace pacman
 
-#endif // FILEMANAGER_H
+#endif // PACMAN_FILEMANAGER_H

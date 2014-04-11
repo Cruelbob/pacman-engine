@@ -2,7 +2,7 @@
 #include "pacman/GameScene.h"
 #include "pacman/Game.h"
 
-using namespace pacman::Graphics;
+using namespace pacman;
 
 std::shared_ptr<Texture> TextureManager::getTexture(const std::string &name) {
     auto textureIt = preloadedTextures_.find(name);

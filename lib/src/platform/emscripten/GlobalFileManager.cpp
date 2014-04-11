@@ -2,7 +2,6 @@
 #include "pacman/GlobalFileManager.h"
 
 using namespace pacman;
-using namespace pacman::FileIO;
 
 typedef void (*OnLoad)(void*,void*,int);
 typedef void (*OnError)(void*);

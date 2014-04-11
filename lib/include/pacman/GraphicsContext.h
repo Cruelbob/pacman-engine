@@ -1,5 +1,5 @@
-#ifndef GRAPHICSCONTEXT_H
-#define GRAPHICSCONTEXT_H
+#ifndef PACMAN_GRAPHICSCONTEXT_H
+#define PACMAN_GRAPHICSCONTEXT_H
 
 #include "pacman/Config.h"
 
@@ -26,4 +26,4 @@ class GraphicsContext {
 };
 } // namespace pacman
 
-#endif // GRAPHICSCONTEXT_H
+#endif // PACMAN_GRAPHICSCONTEXT_H

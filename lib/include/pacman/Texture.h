@@ -1,5 +1,5 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef PACMAN_TEXTURE_H
+#define PACMAN_TEXTURE_H
 
 #include <cstdint>
 
@@ -13,14 +13,12 @@
 
 
 #include "array_view.h"
-#include "Color.h"
-#include "Geometry.h"
+#include "Types.h"
 
 namespace pacman {
-namespace Graphics {
 class Texture {
   public:
-    typedef point2d::size_type size_type;
+    typedef float size_type;
     Texture()
 #if GL || GLES2
       : texture_(0)
@@ -58,7 +56,6 @@ class Texture {
     GLuint texture_;
 #endif
 };
-} // namespace Graphics
 } // namespace pacman
 
-#endif // TEXTURE_H
+#endif // PACMAN_TEXTURE_H

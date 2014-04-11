@@ -1,6 +1,6 @@
 #include "pacman/Node.h"
 
-using namespace pacman::Graphics;
+using namespace pacman;
 
 void Node::addChild(const std::shared_ptr<Node> &child) {
     childs_.push_back(child);
@@ -33,11 +33,14 @@ void Node::setTransformIsDirty() {
 
 void Node::updateTransform() {
     auto parent = parent_.lock();
-    assert(parent);
-    transform_ = parent->getTransform();
-    transform.scale(scale);
-    transform.rotate(rotation);
-    transform.scale(size);
-    transform.translate(-pivot);
+    if(parent) {
+        transform_ = parent->getTransform();
+    } else {
+        transform_.setIdentity();
+    }
+    transform_.scale(scale_);
+    transform_.rotate(rotation_);
+    transform_.scale(size_);
+    transform_.translate(-pivot_);
     transformIsDirty_ = false;
 }
