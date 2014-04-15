@@ -9,7 +9,6 @@
 #include "pacman/GlobalFileManager.h"
 
 using namespace pacman;
-using namespace pacman::FileIO;
 
 void GlobalFileManager::update()
 {

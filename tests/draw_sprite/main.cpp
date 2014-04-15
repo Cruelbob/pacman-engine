@@ -27,6 +27,8 @@ class DummyGameScene: public GameScene {
         if(!sprite_ && texture_->isInitialized()) {
             std::cout << "texture loaded\n";
             sprite_ = std::make_shared<Sprite>(texture_);
+            addChild(sprite_);
+            sprite_->setPosition(point2d<float>(0.5f, 0.5f));
         }
         GameScene::update(deltaTime);
     }

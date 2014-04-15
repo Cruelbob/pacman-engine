@@ -11,10 +11,8 @@
 #include "pacman/GlobalFileManager.h"
 
 using namespace pacman;
-using namespace pacman::Graphics;
-using namespace pacman::FileIO;
 
-bool decode_png(const array_view<uint8_t>& encoded, std::vector<Color>& decodedOut, size2d& sizeOut) {
+bool decode_png(const array_view<uint8_t>& encoded, std::vector<Color>& decodedOut, size2d<uint32_t>& sizeOut) {
     png_image image;
     memset(&image, 0, sizeof(png_image));
     image.version = PNG_IMAGE_VERSION;
@@ -32,7 +30,7 @@ bool decode_png(const array_view<uint8_t>& encoded, std::vector<Color>& decodedO
     return true;
 }
 
-bool decode_image(const array_view<uint8_t>& encoded, std::vector<Color>& decodedOut, size2d& sizeOut) {
+bool decode_image(const array_view<uint8_t>& encoded, std::vector<Color>& decodedOut, size2d<uint32_t>& sizeOut) {
     if(!png_sig_cmp(encoded.data(), 0, 8)) {
         return decode_png(encoded, decodedOut, sizeOut);
     }
@@ -58,7 +56,7 @@ std::shared_ptr<Texture> GlobalTextureManager::getTexture(const std::string &nam
             auto textureIt = textures_.find(filename);
             if(status == LoadingStatus::SUCCESS) {
                 std::vector<Color> decodedImage;
-                size2d imageSize;
+                size2d<uint32_t> imageSize;
                 bool isDecoded = decode_image(fileData, decodedImage, imageSize);
                 assert(isDecoded);
                 std::shared_ptr<Texture> texture = textureIt->second.lock();

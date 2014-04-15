@@ -1,9 +1,9 @@
+#include <iostream>
+
 #include <emscripten/emscripten.h>
 
 #include "pacman/GlobalTextureManager.h"
 #include "pacman/Texture.h"
-
-#include <iostream>
 
 using namespace pacman;
 
@@ -17,7 +17,7 @@ GLuint createAndBindTexture() {
 void onImageLoad(std::weak_ptr<Texture>* textureWeak, GLuint textureId, int width, int height) {
     auto texture = textureWeak->lock();
     if(texture) {
-        texture->init(textureId, size2d(width, height));
+        texture->init(textureId, Texture::size2d_type(width, height));
     }
     delete textureWeak;
 }

@@ -13,13 +13,8 @@ class TextureAtlas {
 
     TextureFrame getFrame(const std::string& name) const;
   private:
-    struct FrameInfo {
-        bounds2d bounds;
-        bool rotated;
-    };
-
     std::shared_ptr<Texture> texture_;
-    std::map<std::string, FrameInfo> sprites_;
+    std::map<std::string, Frame> sprites_;
 };
 } // namespace pacman
 

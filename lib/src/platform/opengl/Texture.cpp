@@ -2,7 +2,7 @@
 
 using namespace pacman;
 
-GLuint makeTexture(const array_view<Color> &raw, const size2d &size) {
+GLuint makeTexture(const array_view<Color> &raw, const size2d<uint32_t> &size) {
     GLuint texture = 0;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -16,18 +16,18 @@ GLuint makeTexture(const array_view<Color> &raw, const size2d &size) {
     return texture;
 }
 
-Texture::Texture(const array_view<Color> &raw, const size2d &size):
+Texture::Texture(const array_view<Color> &raw, const size2d<uint32_t> &size):
     size_(size), texture_(makeTexture(raw, size)) {}
 
 #if EMSCRIPTEN
-void Texture::init(GLuint texture, const size2d &size) {
+void Texture::init(GLuint texture, const size2d<uint32_t> &size) {
     clear();
     texture_ = texture;
     size_ = size;
 }
 #endif
 
-void Texture::init(const array_view<Color> &raw, const size2d &size) {
+void Texture::init(const array_view<Color> &raw, const size2d<uint32_t> &size) {
     clear();
     size_ = size;
     texture_ = makeTexture(raw, size);
@@ -37,6 +37,6 @@ void Texture::clear() {
     if(isInitialized()) {
         glDeleteTextures(1, &texture_);
         texture_ = 0;
-        size_.set();
+        size_.set(0, 0);
     }
 }

@@ -58,77 +58,135 @@ inline std::ostream& operator<<(std::ostream& out, const Color& color)
     return out;
 }
 
-typedef Eigen::Vector2f vec2;
+template <typename T>
+using Vec2 = Eigen::Matrix<T, 2, 1>;
 
+template<typename SizeType>
+class point2d {
+  public:
+    point2d(SizeType x = SizeType(), SizeType y = SizeType()): x_(x), y_(y) {}
+    point2d(const Vec2<SizeType>& vec2): x_(vec2[0]), y_(vec2[1]) {}
+
+    SizeType getX() const { return x_; }
+    SizeType getY() const { return y_; }
+
+    Vec2<SizeType> toVec2() const {
+        return Vec2<SizeType>(x_, y_);
+    }
+  private:
+    SizeType x_;
+    SizeType y_;
+};
+
+template<typename SizeType>
+class scale2d {
+  public:
+    scale2d(SizeType xFactor = 1, SizeType yFactor = 1): xFactor_(xFactor), yFactor_(yFactor) {}
+
+    void set(SizeType xFactor, SizeType yFactor) {
+        xFactor_ = xFactor;
+        yFactor_ = yFactor;
+    }
+
+    SizeType getXFactor() const { return xFactor_; }
+    SizeType getYFactor() const { return yFactor_; }
+
+    scale2d<SizeType> operator*(const scale2d<SizeType>& other) const {
+        return scale2d<SizeType>(xFactor_ * other.xFactor_, yFactor_ * other.yFactor_);
+    }
+
+    Vec2<SizeType> toVec2() const {
+        return Vec2<SizeType>(xFactor_, yFactor_);
+    }
+  private:
+    SizeType xFactor_;
+    SizeType yFactor_;
+};
+
+template<typename SizeType>
 class size2d {
   public:
-    typedef float size_type;
-
     size2d(const size2d& other) = default;
     size2d& operator=(const size2d& other) = default;
-    size2d(size_type width = 0, size_type height = 0): width_(width), height_(height) {}
+    size2d(SizeType width = SizeType(), SizeType height = SizeType()): width_(width), height_(height) {}
+    size2d(const Vec2<SizeType>& vec2): width_(vec2[0]), height_(vec2[1]) {}
 
-    void set(size_type width = 0, size_type height = 0) {
+    void set(SizeType width, SizeType height) {
         width_ = width;
         height_ = height;
     }
 
-    void setWidth(size_type width) { width_ = width; }
-    size_type getWidth() const { return width_; }
-    void setHeight(size_type height) { height_ = height; }
-    size_type getHeight() const { return height_; }
-    size_type getArea() const { return width_ * height_; }
+    void setWidth(SizeType width) { width_ = width; }
+    SizeType getWidth() const { return width_; }
+    void setHeight(SizeType height) { height_ = height; }
+    SizeType getHeight() const { return height_; }
+
+    scale2d<float> operator/(const size2d<SizeType>& other) const {
+        return scale2d<float>(float(width_)/other.width_, float(height_)/other.height_);
+    }
+
+    size2d<float> operator*(const scale2d<float>& scale) const {
+        return size2d<SizeType>(width_ * scale.getXFactor(), height_ * scale.getYFactor());
+    }
+
+    Vec2<SizeType> toVec2() const {
+        return Vec2<SizeType>(width_, height_);
+    }
   private:
-    size_type width_;
-    size_type height_;
+    SizeType width_;
+    SizeType height_;
 };
 
+template<typename SizeType>
 class bounds2d {
   public:
-    typedef float size_type;
+    bounds2d(SizeType left = SizeType(),
+             SizeType bottom = SizeType(),
+             SizeType right = SizeType(),
+             SizeType top = SizeType()):
+      left_(left),
+      bottom_(bottom),
+      right_(right),
+      top_(top) {}
+    bounds2d(const size2d<SizeType>& size, const point2d<SizeType>& pos = point2d<SizeType>()):
+        left_(pos.getX()), bottom_(pos.getY()), right_(left_ + size.getWidth()), top_(bottom_ + size.getHeight()) {}
 
-    bounds2d(const bounds2d& other) = default;
-    bounds2d& operator=(const bounds2d& other) = default;
-    bounds2d(size_type left = 0, size_type bottom = 0, size_type right = 0, size_type top = 0):
-        left_(left), bottom_(bottom), right_(right), top_(top) {}
-    bounds2d(const size2d& size, const vec2& pos = vec2(0.0f, 0.0f)):
-        left_(pos[0]), bottom_(pos[1]), right_(left_ + size.getWidth()), top_(bottom_ + size.getHeight()) {}
-
-    void set(size_type left = 0, size_type bottom = 0, size_type right = 0, size_type top = 0) {
+    void set(SizeType left, SizeType bottom, SizeType right, SizeType top) {
         left_ = left;
         bottom_ = bottom;
         right_ = right;
         top_ = top;
     }
 
-    void setLeft(size_type left) { left_ = left; }
-    size_type getLeft() const { return left_; }
-    void setTop(size_type top) { top_ = top; }
-    size_type getTop() const { return top_; }
-    void setRight(size_type right) { right_ = right; }
-    size_type getRight() const { return right_; }
-    void setBottom(size_type bottom) { bottom_ = bottom; }
-    size_type getBottom() const { return bottom_; }
+    void setLeft(SizeType left) { left_ = left; }
+    SizeType getLeft() const { return left_; }
+    void setTop(SizeType top) { top_ = top; }
+    SizeType getTop() const { return top_; }
+    void setRight(SizeType right) { right_ = right; }
+    SizeType getRight() const { return right_; }
+    void setBottom(SizeType bottom) { bottom_ = bottom; }
+    SizeType getBottom() const { return bottom_; }
 
-    vec2 getPosition() const {
-        return vec2(left_, bottom_);
+    point2d<SizeType> getPosition() const {
+        return point2d<SizeType>(left_, bottom_);
     }
-    void setPosition(const vec2& pos) {
-        right_ = right_ - left_ + pos[0];
-        top_ = top_ - bottom_ + pos[1];
-        left_ = pos[0];
-        bottom_ = pos[1];
+    void setPosition(const point2d<SizeType>& pos) {
+        size2d<SizeType> size = getSize();
+        left_ = pos.getX();
+        bottom_ = pos.getY();
+        right_ = pos.getX() + size.getWidth();
+        top_ = pos.getY() + size.getHeight();
     }
 
-    size2d getSize() const { return size2d(right_ - left_, top_ - bottom_); }
-    void setSize(const size2d& size) {
+    size2d<SizeType> getSize() const { return size2d<SizeType>(right_ - left_, top_ - bottom_); }
+    void setSize(const size2d<SizeType>& size) {
         right_ = left_ + size.getWidth();
         top_ = bottom_ + size.getHeight();
     }
 
-    bool contains(const vec2& point) const {
-        return  point[0] >= left_ && point[0] <= right_ &&
-                point[1] >= top_ && point[1] <= bottom_;
+    bool contains(const point2d<SizeType>& point) const {
+        return  point.getX() >= left_ && point.getX() <= right_ &&
+                point.getY() >= top_ && point.getY() <= bottom_;
     }
 
     bounds2d getAbsoluteBounds(const bounds2d& relative) const {
@@ -139,12 +197,52 @@ class bounds2d {
     }
 
   private:
-    size_type left_;
-    size_type bottom_;
-    size_type right_;
-    size_type top_;
+    SizeType left_;
+    SizeType bottom_;
+    SizeType right_;
+    SizeType top_;
 };
 
+class Frame {
+  public:
+    Frame(const bounds2d<float>& bounds, bool rotated = false): bounds_(bounds), rotated_(rotated) {}
+
+    const bounds2d<float>& getBounds() const { return bounds_; }
+    bool isRotated() const { return rotated_; }
+  private:
+    bounds2d<float> bounds_;
+    bool rotated_;
+};
+
+struct V2F_C4B_T2F {
+    V2F_C4B_T2F(const Vec2<float>& coords, const Vec2<float>& texCoords, const Color& colors = Color(1.0f, 1.0f, 1.0f, 1.0f)):
+      coords(coords), texCoords(texCoords), colors(colors) {}
+
+    Vec2<float> coords;
+    Vec2<float> texCoords;
+    Color colors;
+};
+
+struct V2F_C4B_T2F_Quad {
+    V2F_C4B_T2F_Quad(const Frame& frame):
+      bottomLeft(Vec2<float>(0.0f, 0.0f),
+                 frame.isRotated() ? Vec2<float>(frame.getBounds().getLeft(), frame.getBounds().getTop())
+                                   : Vec2<float>(frame.getBounds().getLeft(), frame.getBounds().getBottom())),
+      bottomRight(Vec2<float>(1.0f, 0.0f),
+                  frame.isRotated() ? Vec2<float>(frame.getBounds().getLeft(), frame.getBounds().getBottom())
+                                    : Vec2<float>(frame.getBounds().getRight(), frame.getBounds().getBottom())),
+      topLeft(Vec2<float>(0.0f, 1.0f),
+              frame.isRotated() ? Vec2<float>(frame.getBounds().getRight(), frame.getBounds().getTop())
+                                : Vec2<float>(frame.getBounds().getLeft(), frame.getBounds().getTop())),
+      topRight(Vec2<float>(0.0f, 1.0f),
+               frame.isRotated() ? Vec2<float>(frame.getBounds().getRight(), frame.getBounds().getBottom())
+                                 : Vec2<float>(frame.getBounds().getRight(), frame.getBounds().getTop())) {}
+
+    V2F_C4B_T2F bottomLeft;
+    V2F_C4B_T2F bottomRight;
+    V2F_C4B_T2F topLeft;
+    V2F_C4B_T2F topRight;
+};
 } // namespace pacman
 
 #endif // PACMAN_TYPES_H

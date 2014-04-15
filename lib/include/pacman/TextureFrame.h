@@ -8,26 +8,26 @@
 namespace pacman {
 class TextureFrame {
   public:
-    TextureFrame(const std::shared_ptr<Texture>& texture, const bounds2d& bounds, bool rotated = false):
-      texture_(texture), bounds_(bounds), rotated_(rotated) { assert(texture); }
+    TextureFrame(const std::shared_ptr<Texture>& texture, const Frame& info):
+      texture_(texture), frame_(info) { assert(texture); }
 
     TextureFrame(const std::shared_ptr<Texture>& texture):
-        TextureFrame(texture, texture->getSize()) { assert(texture->isInitialized()); }
+        TextureFrame(texture, bounds2d<float>(0.0f, 0.0f, 1.0f, 1.0f)) {}
 
-    void setTexture(const std::shared_ptr<Texture>& texture) { texture_ = texture; }
     const std::shared_ptr<Texture>& getTexture() const { return texture_; }
-    void setBounds(const bounds2d& bounds) { bounds_ = bounds; }
-    const bounds2d& getBounds() const { return bounds_; }
-    void setRotated(bool rotated) { rotated_ = rotated; }
-    bool getRotated() const { return rotated_; }
-
-    bool isInitialized() const {
-        return texture_->isInitialized();
+    const Frame& getFrame() const { return frame_; }
+    size2d<uint32_t> getSizeInPoints() const {
+        assert(texture_ && texture_->isInitialized());
+        size2d<uint32_t> textureSize = texture_->getSize();
+        size2d<float> frameSize = frame_.getBounds().getSize();
+        uint32_t width = textureSize.getWidth() * frameSize.getWidth();
+        uint32_t height = textureSize.getHeight() * frameSize.getHeight();
+        return frame_.isRotated() ? size2d<uint32_t>(height, width) : size2d<uint32_t>(width, height);
     }
   private:
     std::shared_ptr<Texture> texture_;
-    bounds2d bounds_;
-    bool rotated_;
+    Frame frame_;
+
 };
 } // namespace pacman
 
