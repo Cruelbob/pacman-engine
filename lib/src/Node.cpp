@@ -28,6 +28,7 @@ void Node::removeFromParent() {
 
 void Node::visit(pacman::Time deltaTime) {
     update(deltaTime);
+    assert(!transformIsDirty_);
     draw();
     for(const auto& child : childs_) {
         child->visit(deltaTime);
